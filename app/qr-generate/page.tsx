@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import { useQRCode } from 'next-qrcode';
-import { QrCode } from 'lucide-react';
+import { QrCode, ScanQrCode } from 'lucide-react';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import Protected from "@/components/Password";
 
 export default function QRGen() {
     const { Image } = useQRCode();
@@ -21,8 +23,14 @@ export default function QRGen() {
     }
 
     return (
+        <Protected>
         <section>
-            <div className="p-6 gap-4 flex flex-col items-center justify-center">
+            <div className="sticky top-2 inline-flex m-6 mix-blend-difference filter grayscale">
+            <Link href="/main">
+                <ScanQrCode className="size-10" />
+            </Link>
+            </div>
+            <div className="p-6 gap-4 flex flex-col items-center justify-center h-screen">
                 <div className="text-center mb-6">
                     <h1 className="text-2xl font-bold">QR Code Generator</h1>
                     <p>Generate QR codes here to download.</p>
@@ -83,5 +91,6 @@ export default function QRGen() {
                 </div>
             </div>
         </section>
+        </Protected>
     );
 }

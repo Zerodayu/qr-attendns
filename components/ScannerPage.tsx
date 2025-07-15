@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Scanner,
   useDevices,
@@ -45,6 +45,11 @@ export default function ScannerPage({
   const [alertDescription, setAlertDescription] = useState<string>("");
 
   const devices = useDevices();
+  const toggleRef = useRef(toggleValue);
+
+  useEffect(() => {
+    toggleRef.current = toggleValue;
+  }, [toggleValue]);
 
   function getTracker() {
     switch (tracker) {
@@ -59,17 +64,19 @@ export default function ScannerPage({
     }
   }
 
-  const handleScan = async (data: string) => {
+  const handleScan = (data: string) => {
     setPause(true);
     setScannedValue(data);
     if (onScanValue) onScanValue(data);
     setAlertDescription(data);
     setAlertOpen(true);
+  };
 
+  const handleConfirm = async () => {
     const now = new Date();
     const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const action = toggleValue === "off" ? "Sign-in" : "Sign-out";
-    const notifBody = `${action}: ${data} - ${timeString}`;
+    const action = toggleRef.current === "off" ? "Sign-in" : "Sign-out";
+    const notifBody = `${action}: ${scannedValue} - ${timeString}`;
 
     await fetch('/api/send-push', {
       method: 'POST',
@@ -78,6 +85,7 @@ export default function ScannerPage({
     });
 
     setPause(false);
+    setAlertOpen(false);
   };
 
   return (
@@ -92,8 +100,8 @@ export default function ScannerPage({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction> 
+            <AlertDialogCancel onClick={() => { setPause(false); }}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm}>
               Confirm
             </AlertDialogAction>
           </AlertDialogFooter>

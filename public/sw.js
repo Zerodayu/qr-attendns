@@ -4,8 +4,8 @@ self.addEventListener('push', event => {
   event.waitUntil(
     self.registration.showNotification(data.title || 'QR Scan', {
       body: data.body || 'QR code scanned!',
-      icon: '/next.svg',
-      badge: '/next.svg',
+      icon: '/Logo.svg',
+      badge: '/Logo.svg',
     })
   );
 });

@@ -1,9 +1,8 @@
 import {
   SparklesIcon,
-  UploadIcon,
   ScanQrCode
 } from "lucide-react"
-
+import Link from "next/link";
 import AppToggle from "@/components/app-toggle"
 import { Button } from "@/components/ui/button"
 
@@ -27,26 +26,15 @@ export default function Navbar({ toggleValue, setToggleValue }: NavbarProps) {
         <AppToggle value={toggleValue} onValueChange={setToggleValue} />
         {/* Right side */}
         <div className="flex flex-1 items-center justify-end gap-2">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="text-sm max-sm:aspect-square max-sm:p-0"
-          >
-            <UploadIcon
-              className="opacity-60 sm:-ms-1"
-              size={16}
-              aria-hidden="true"
-            />
-            <span className="max-sm:sr-only">Export</span>
-          </Button>
-          <Button size="sm" className="text-sm max-sm:aspect-square max-sm:p-0">
-            <SparklesIcon
-              className="opacity-60 sm:-ms-1"
-              size={16}
-              aria-hidden="true"
-            />
-            <span className="max-sm:sr-only">Upgrade</span>
-          </Button>
+          <Link href="/qr-generate">
+            <Button size="sm" className="text-sm max-sm:aspect-square max-sm:p-0">
+              <SparklesIcon
+                className="opacity-60 sm:-ms-1"
+                size={16}
+              />
+              <span className="max-sm:sr-only">Generate Qr</span>
+            </Button>
+          </Link>
         </div>
       </div>
     </header>
