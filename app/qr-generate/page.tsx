@@ -66,23 +66,21 @@ export default function QRGen() {
                         <div className="flex items-center justify-center w-full h-auto">
                             {qrText
                                 ? (
-                                    <div aria-label={`QR code`}>
-                                        <Image
-                                            text={qrText}
-                                            options={{
-                                                type: 'image/png',
-                                                quality: 1,
-                                                errorCorrectionLevel: 'M',
-                                                margin: 2,
-                                                scale: 10,
-                                                width: 500,
-                                                color: {
-                                                    dark: '#000000FF',
-                                                    light: '#FFFFFFFF',
-                                                },
-                                            }}
-                                        />
-                                    </div>
+                                    <Image
+                                        text={qrText}
+                                        options={{
+                                            type: 'image/png',
+                                            quality: 1,
+                                            errorCorrectionLevel: 'M',
+                                            margin: 2,
+                                            scale: 10,
+                                            width: 500,
+                                            color: {
+                                                dark: '#000000FF',
+                                                light: '#FFFFFFFF',
+                                            },
+                                        }}
+                                    />
                                 )
                                 : (
                                     <QrCode className="size-70" />

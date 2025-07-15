@@ -17,8 +17,14 @@ export async function POST(request: Request) {
     const subs = await prisma.pushSubscription.findMany();
     for (const sub of subs) {
       try {
+        // Validate and cast keys
+        const keys = sub.keys as { p256dh: string; auth: string } | null;
+        if (!keys || typeof keys.p256dh !== 'string' || typeof keys.auth !== 'string') {
+          console.error('Invalid keys for subscription:', sub.endpoint, sub.keys);
+          continue;
+        }
         await webpush.sendNotification(
-          { endpoint: sub.endpoint, keys: sub.keys, expirationTime: Date.now() + 12 * 60 * 60 * 1000 }, // 12 hours from now
+          { endpoint: sub.endpoint, keys, expirationTime: Date.now() + 12 * 60 * 60 * 1000 }, // 12 hours from now
           JSON.stringify({ title: 'QR Attendns', body })
         );
       } catch (err) {
