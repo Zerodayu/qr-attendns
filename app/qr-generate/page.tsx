@@ -25,7 +25,7 @@ export default function QRGen() {
     return (
         <Protected>
         <section>
-            <div className="sticky top-2 inline-flex m-6 mix-blend-difference filter grayscale">
+            <div className="fixed top-0 inline-flex m-6 mix-blend-difference filter grayscale">
             <Link href="/main">
                 <ScanQrCode className="size-10" />
             </Link>

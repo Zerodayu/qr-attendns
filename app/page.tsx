@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(false);
 
   async function handleEnable() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
@@ -52,12 +52,12 @@ export default function Home() {
 
   return (
     <section className="flex flex-col justify-center h-screen">
-        <div className="sticky top-2 inline-flex m-6">
+        <div className="fixed top-0 inline-flex m-6">
           <Link href="/main">
             <ScanQrCode className="size-10" />
           </Link>
         </div>
-      <div className="flex h-screen flex-col items-center justify-center gap-2">
+      <div className="flex pb-20 flex-col items-center justify-center gap-2">
         <div>
           <Announcement>
             <AnnouncementTag>New</AnnouncementTag>
