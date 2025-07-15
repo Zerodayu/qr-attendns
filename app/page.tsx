@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,17 @@ import {
 
 export default function Home() {
   const [enabled, setEnabled] = useState(false);
+
+  // Check if device is already registered for notifications
+  useEffect(() => {
+    async function checkSubscription() {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      setEnabled(!!sub);
+    }
+    checkSubscription();
+  }, []);
 
   async function handleEnable() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
@@ -51,7 +62,7 @@ export default function Home() {
   }
 
   return (
-    <section className="flex flex-col justify-center h-screen">
+    <section className="flex flex-col justify-center h-screen px-4">
         <div className="fixed top-0 inline-flex m-6">
           <Link href="/main">
             <ScanQrCode className="size-10" />
