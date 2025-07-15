@@ -59,12 +59,20 @@ export default function ScannerPage({
     }
   }
 
-  const handleScan = (data: string) => {
+  const handleScan = async (data: string) => {
     setPause(true);
     setScannedValue(data);
     if (onScanValue) onScanValue(data);
     setAlertDescription(data);
     setAlertOpen(true);
+
+    // Send push notification to all subscribers
+    await fetch('/api/send-push', {
+      method: 'POST',
+      body: JSON.stringify({ body: data }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
     setPause(false);
   };
 
