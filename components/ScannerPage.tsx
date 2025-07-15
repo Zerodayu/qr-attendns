@@ -17,28 +17,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const styles = {
-  container: {
-    width: 400,
-    margin: "auto",
-  },
-  controls: {
-    marginBottom: 8,
-  },
-};
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function ScannerPage({
   className,
   onScanValue,
+  toggleValue,
 }: {
   className?: string;
   onScanValue?: (value: string) => void;
+  toggleValue: "off" | "on";
 }) {
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
   const [tracker, setTracker] = useState<string | undefined>("outline");
   const [pause, setPause] = useState(false);
   const [scannedValue, setScannedValue] = useState<string>("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertDescription, setAlertDescription] = useState<string>("");
 
   const devices = useDevices();
 
@@ -55,34 +59,38 @@ export default function ScannerPage({
     }
   }
 
-  const handleScan = async (data: string) => {
+  const handleScan = (data: string) => {
     setPause(true);
-    setScannedValue(data); // Store scanned value
-    if (onScanValue) onScanValue(data); // Pass value up if callback provided
-    try {
-      const response = await fetch(
-        `your-api-url?code=${encodeURIComponent(data)}`
-      );
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        alert("Success! Welcome to the conference.");
-      } else {
-        alert(result.message);
-      }
-    } catch (error: unknown) {
-      console.log(error);
-    } finally {
-      setPause(false);
-    }
+    setScannedValue(data);
+    if (onScanValue) onScanValue(data);
+    setAlertDescription(data);
+    setAlertOpen(true);
+    setPause(false);
   };
 
   return (
     <div className={`flex flex-col items-center w-full ${className ?? ""}`}>
-      <h1 className="p-4 text-xl font-bold">
-        {scannedValue || "Scan a QR code"}
+      <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-bold self-center">{(toggleValue === "off" ? "Sign-in" : "Sign-out")}</AlertDialogTitle>
+            <AlertDialogDescription className="text-md">
+              {new Date().toLocaleDateString()} - {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} <br />
+              <span className="text-primary font-semibold">{alertDescription}</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction> 
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <h1 className="p-4 text-2xl font-bold font-mono">
+        {(toggleValue === "off" ? "Sign-in" : "Sign-out")}
       </h1>
-      
       <div className="p-2 flex flex-col md:flex-row gap-2 w-full max-w-lg">
         <Select
           value={deviceId}
