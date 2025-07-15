@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { ScanQrCode } from "lucide-react";
+import { ScanQrCode, LoaderCircle } from "lucide-react";
 import {
   Announcement,
   AnnouncementTag,
@@ -17,6 +17,7 @@ import {
 
 export default function Home() {
   const [enabled, setEnabled] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   // Check if device is already registered for notifications
   useEffect(() => {
@@ -31,34 +32,43 @@ export default function Home() {
 
   async function handleEnable() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
-    const reg = await navigator.serviceWorker.register('/sw.js');
-    await Notification.requestPermission();
-    const sub = await reg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '<YOUR_PUBLIC_VAPID_KEY>',
-    });
-    await fetch('/api/subscribe', {
-      method: 'POST',
-      body: JSON.stringify(sub),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    setEnabled(true);
+    setLoading(true);
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      await Notification.requestPermission();
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '<YOUR_PUBLIC_VAPID_KEY>',
+      });
+      await fetch('/api/subscribe', {
+        method: 'POST',
+        body: JSON.stringify(sub),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      setEnabled(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleDisable() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
-    // Get the current subscription
-    const reg = await navigator.serviceWorker.ready;
-    const sub = await reg.pushManager.getSubscription();
-    if (sub) {
-      await fetch('/api/unsubscribe', {
-        method: 'POST',
-        body: JSON.stringify({ endpoint: sub.endpoint }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      await sub.unsubscribe();
+    setLoading(true);
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) {
+        await fetch('/api/unsubscribe', {
+          method: 'POST',
+          body: JSON.stringify({ endpoint: sub.endpoint }),
+          headers: { 'Content-Type': 'application/json' },
+        });
+        await sub.unsubscribe();
+      }
+      setEnabled(false);
+    } finally {
+      setLoading(false);
     }
-    setEnabled(false);
   }
 
   return (
@@ -79,7 +89,12 @@ export default function Home() {
         </div>
         <h1 className="text-center text-5xl md:text-8xl font-bold tracking-tight text-balance">Qr Attendns</h1>
         <p className="font-mono text-center text-md md:text-lg text-muted-foreground pb-10">Receive notifications for attendance updates</p>
-        {enabled ? (
+        {loading ? (
+          <Button disabled>
+            <LoaderCircle className="size-5 animate-spin" />
+            Loading
+          </Button>
+        ) : enabled ? (
           <Button onClick={handleDisable} variant={"outline"}>
             <BellOff className="size-5" />
             Disable
