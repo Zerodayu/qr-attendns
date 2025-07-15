@@ -66,10 +66,14 @@ export default function ScannerPage({
     setAlertDescription(data);
     setAlertOpen(true);
 
-    // Send push notification to all subscribers
+    const now = new Date();
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const action = toggleValue === "off" ? "Sign-in" : "Sign-out";
+    const notifBody = `${action}: ${data} - ${timeString}`;
+
     await fetch('/api/send-push', {
       method: 'POST',
-      body: JSON.stringify({ body: data }),
+      body: JSON.stringify({ body: notifBody }),
       headers: { 'Content-Type': 'application/json' },
     });
 
