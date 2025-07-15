@@ -72,7 +72,7 @@ export default function Home() {
   }
 
   return (
-    <section className="flex flex-col justify-center h-screen px-4">
+    <section className="flex flex-col justify-center h-screen px-2">
         <div className="fixed top-0 inline-flex m-6">
           <Link href="/main">
             <ScanQrCode className="size-10" />
@@ -113,28 +113,28 @@ export default function Home() {
           alt="Qr Attendns Logo"
           width={300}
           height={300}
-          className="rounded-lg size-20"
+          className="size-20"
         />
         <Image
           src="/shadcn-ui.svg"
           alt="Qr Attendns Logo"
           width={100}
           height={100}
-          className="rounded-lg size-6"
+          className="size-6"
         />
         <Image
           src="/tailwind-css.svg"
           alt="Qr Attendns Logo"
           width={100}
           height={100}
-          className="rounded-lg size-10"
+          className="size-10"
         />
         <Image
           src="/vercel.svg"
           alt="Qr Attendns Logo"
           width={100}
           height={100}
-          className="rounded-lg size-6"
+          className="size-6"
         />
       </div>
     </section>

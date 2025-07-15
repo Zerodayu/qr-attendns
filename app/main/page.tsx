@@ -14,7 +14,7 @@ export default function Home() {
         <section>
         <div className="flex">
             <Navbar toggleValue={toggleValue} setToggleValue={setToggleValue} />
-            <div className="flex pt-15 w-full min-h-screen flex-col items-center justify-center pag-4">
+            <div className="flex pt-15 w-full min-h-screen flex-col items-center justify-center gap-4">
             <ScannerPage
                 className="w-full max-w-lg"
                 onScanValue={setQrValue}
