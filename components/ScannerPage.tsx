@@ -36,7 +36,7 @@ export default function ScannerPage({
   onScanValue?: (value: string) => void;
 }) {
   const [deviceId, setDeviceId] = useState<string | undefined>(undefined);
-  const [tracker, setTracker] = useState<string | undefined>("centerText");
+  const [tracker, setTracker] = useState<string | undefined>("outline");
   const [pause, setPause] = useState(false);
   const [scannedValue, setScannedValue] = useState<string>("");
 
