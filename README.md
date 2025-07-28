@@ -54,12 +54,18 @@ cd qr-attendns
 npm install
 ```
 
+Edit the `.env` file and set the following variables:
 ```bash
 # Copy the example environment file and update it with your values
-cp .env.example .env
+DATABASE_URL="..."
+
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=...
+
+VAPID_PRIVATE_KEY=...
+
+NEXT_PUBLIC_PASSWORD=...
 ```
 
-Edit the `.env` file and set the following variables:
 
 - `DATABASE_URL` – Your database connection string (used by Prisma)
 - `NEXT_PUBLIC_VAPID_PUBLIC_KEY` – Your VAPID public key for push notifications
