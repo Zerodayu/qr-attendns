@@ -2,7 +2,7 @@
 
 A modern QR-based attendance web app built with Next.js. Qr Attendns lets users generate and scan QR codes for attendance tracking, and instantly notifies users when their QR code is scanned—whether for sign-in or sign-out. Includes a built-in QR generator and scanner, with a clean, responsive UI.
 
-🔗**Live Site**: [https://koys-photos.vercel.app](https://koys-photos.vercel.app)
+🔗**Live Site**: [qr-attendns.vercel.app](https://qr-attendns.vercel.app/)
 
 ## Screenshots
 
