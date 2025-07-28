@@ -34,6 +34,7 @@ A modern QR-based attendance web app built with Next.js. Qr Attendns lets users 
 - Typescript
 - Tailwind CSS  
 - shadcn/ui  
+- Prisma
 - Vercel  
 
 ## Result
@@ -45,11 +46,29 @@ A fast, secure, and user-friendly attendance system that leverages QR codes and 
 ```bash
 # Clone the repository
 git clone https://github.com/urUsername/qr-attendns.git
+cd qr-attendns
 ```
 
 ```bash
 # Install dependencies
 npm install
+```
+
+```bash
+# Copy the example environment file and update it with your values
+cp .env.example .env
+```
+
+Edit the `.env` file and set the following variables:
+
+- `DATABASE_URL` – Your database connection string (used by Prisma)
+- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` – Your VAPID public key for push notifications
+- `VAPID_PRIVATE_KEY` – Your VAPID private key for push notifications
+- `NEXT_PUBLIC_PASSWORD` – Password for accessing protected pages
+
+```bash
+# Push Prisma schema to your database
+npx prisma db push
 ```
 
 ```bash
