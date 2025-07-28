@@ -25,7 +25,7 @@ A modern QR-based attendance web app built with Next.js. Qr Attendns lets users 
 - **Notifications:** Receive push notifications when your QR code is scanned.
 - **Sign In/Out Toggle:** Easily switch between sign-in and sign-out modes.
 - **Protected Pages:** Secure access to attendance features.
-- **Modern UI:** Built with Tailwind CSS, Framer Motion, and shadcn/ui for a sleek experience.
+- **Modern UI:** Built with Tailwind CSS, and shadcn/ui for a sleek experience.
 
 ## Tech Stack
 
