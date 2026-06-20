@@ -74,14 +74,17 @@ export default function ScannerPage({
 
   const handleConfirm = async () => {
     const now = new Date();
-    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timeString = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     const action = toggleRef.current === "off" ? "Sign-in" : "Sign-out";
     const notifBody = `${action}: ${scannedValue} - ${timeString}`;
 
-    await fetch('/api/send-push', {
-      method: 'POST',
+    await fetch("/api/send-push", {
+      method: "POST",
       body: JSON.stringify({ body: notifBody }),
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
 
     setPause(false);
@@ -93,14 +96,29 @@ export default function ScannerPage({
       <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-bold self-center">{(toggleValue === "off" ? "Sign-in" : "Sign-out")}</AlertDialogTitle>
+            <AlertDialogTitle className="font-bold self-center">
+              {toggleValue === "off" ? "Sign-in" : "Sign-out"}
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-md">
-              {new Date().toLocaleDateString()} - {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} <br />
-              <span className="text-primary font-semibold">{alertDescription}</span>
+              {new Date().toLocaleDateString()} -{" "}
+              {new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}{" "}
+              <br />
+              <span className="text-primary font-semibold">
+                {alertDescription}
+              </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => { setPause(false); }}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel
+              onClick={() => {
+                setPause(false);
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirm}>
               Confirm
             </AlertDialogAction>
@@ -109,13 +127,10 @@ export default function ScannerPage({
       </AlertDialog>
 
       <h1 className="p-4 text-2xl font-bold font-mono">
-        {(toggleValue === "off" ? "Sign-in" : "Sign-out")}
+        {toggleValue === "off" ? "Sign-in" : "Sign-out"}
       </h1>
       <div className="p-2 flex flex-col md:flex-row gap-2 w-full max-w-lg">
-        <Select
-          value={deviceId}
-          onValueChange={(value) => setDeviceId(value)}
-        >
+        <Select value={deviceId} onValueChange={(value) => setDeviceId(value)}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select a device" />
           </SelectTrigger>
@@ -132,7 +147,9 @@ export default function ScannerPage({
         </Select>
         <Select
           value={tracker ?? "none"}
-          onValueChange={(value) => setTracker(value === "none" ? undefined : value)}
+          onValueChange={(value) =>
+            setTracker(value === "none" ? undefined : value)
+          }
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select tracker" />
