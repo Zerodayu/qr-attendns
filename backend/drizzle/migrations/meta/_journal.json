@@ -5,8 +5,36 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1781978107138,
-      "tag": "0000_woozy_korvac",
+      "when": 1781980620755,
+      "tag": "0000_mighty_power_pack",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781980706285,
+      "tag": "0001_freezing_zaladane",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781980745045,
+      "tag": "0002_red_bromley",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1781980795096,
+      "tag": "0003_boring_warhawk",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1781983027336,
+      "tag": "0004_hard_the_phantom",
       "breakpoints": true
     }
   ]

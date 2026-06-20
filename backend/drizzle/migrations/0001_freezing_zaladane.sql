@@ -1,0 +1,1 @@
+ALTER TABLE "PushSubscription" ALTER COLUMN "userId" SET DATA TYPE serial;

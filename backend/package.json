@@ -3,7 +3,7 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts ",
+    "dev": "bun run --watch src/index.ts",
     "db:dev-gen": "bunx drizzle-kit generate --config=drizzle-dev.config.ts",
     "db:dev-push": "bunx drizzle-kit --config=drizzle-dev.config.ts push",
     "db:dev-mig": "bunx drizzle-kit --config=drizzle-dev.config.ts migrate",

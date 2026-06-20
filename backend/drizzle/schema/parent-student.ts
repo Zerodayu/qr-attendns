@@ -1,4 +1,10 @@
-import { pgTable, text, integer, primaryKey } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  integer,
+  primaryKey,
+  serial,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 import { student } from "./student";
 
@@ -7,10 +13,10 @@ import { student } from "./student";
 export const parentStudent = pgTable(
   "ParentStudent",
   {
-    parentId: text("parentId")
+    parentId: serial("parentId")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    studentId: integer("studentId")
+    studentId: serial("studentId")
       .notNull()
       .references(() => student.id, { onDelete: "cascade" }),
   },

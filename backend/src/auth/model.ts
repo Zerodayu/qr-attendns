@@ -1,2 +1,2 @@
 export { auth } from "./service";
-export { authRoutes, OpenAPI } from "./controller";
+export { authPlugin, OpenAPI } from "./controller";

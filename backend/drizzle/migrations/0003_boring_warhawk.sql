@@ -1,0 +1,1 @@
+ALTER TABLE "Section" ALTER COLUMN "teacherId" SET DATA TYPE serial;

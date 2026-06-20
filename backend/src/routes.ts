@@ -1,4 +1,4 @@
 import { Elysia } from "elysia";
-import { authRoutes } from "./auth/controller";
+import { authPlugin } from "./auth/controller";
 
-export const apiRoutes = new Elysia().use(authRoutes);
+export const apiRoutes = new Elysia({ prefix: "api/v1/" }).use(authPlugin);

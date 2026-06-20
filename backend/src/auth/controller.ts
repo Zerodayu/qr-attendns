@@ -1,28 +1,26 @@
 import { Elysia } from "elysia";
 import { auth } from "./service";
 
-export const authRoutes = new Elysia({ name: "auth" })
-  .mount(auth.handler)
-  .macro({
-    auth: {
-      async resolve({ request: { headers }, set }) {
-        const session = await auth.api.getSession({ headers });
+export const authPlugin = new Elysia({ name: "auth" }).macro({
+  auth: {
+    async resolve({ request: { headers }, set }) {
+      const session = await auth.api.getSession({ headers });
 
-        if (!session) {
-          set.status = 401;
-          return;
-        }
+      if (!session) {
+        set.status = 401;
+        return;
+      }
 
-        return { session } as { session: typeof session };
-      },
+      return { session } as { session: typeof session };
     },
-  });
+  },
+});
 
 let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>;
 const getSchema = async () => (_schema ??= auth.api.generateOpenAPISchema());
 
 export const OpenAPI = {
-  getPaths: async (prefix = "/auth/api") => {
+  getPaths: async (prefix = "api/v1/auth") => {
     const { paths } = await getSchema();
     const reference: any = Object.create(null);
     for (const path of Object.keys(paths)) {

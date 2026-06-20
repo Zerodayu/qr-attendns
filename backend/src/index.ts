@@ -1,7 +1,9 @@
 import { Elysia } from "elysia";
 import { openapi } from "@elysiajs/openapi";
+import { auth } from "./auth/service";
 import { OpenAPI } from "./auth/controller";
 import { apiRoutes } from "./routes";
+import { cors } from "@elysiajs/cors";
 
 const app = new Elysia()
   .use(
@@ -17,12 +19,21 @@ const app = new Elysia()
       },
     }),
   )
+  .use(
+    cors({
+      origin: "http://localhost:3001",
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      credentials: true,
+      allowedHeaders: ["Content-Type", "Authorization"],
+    }),
+  )
   .get("/", () => "Hello Elysia", {
     detail: { hide: true },
   })
+  .mount(auth.handler)
   .use(apiRoutes)
   .listen(8080);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
+  `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`,
 );

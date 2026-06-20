@@ -1,6 +1,6 @@
 {
-  "id": "41ad495e-64d3-4102-88a1-c93ea293fe2d",
-  "prevId": "9a1bf909-91ad-439f-b374-c985aa162061",
+  "id": "0f9188df-0153-4457-b09d-374cbf83c26f",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -89,7 +89,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
@@ -107,7 +107,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": false,
           "notNull": true
         },
@@ -211,7 +211,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
@@ -254,7 +254,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": false,
           "notNull": true
         }
@@ -311,7 +311,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
@@ -336,6 +336,12 @@
         },
         "image": {
           "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "username": {
+          "name": "username",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -372,6 +378,13 @@
           "columns": [
             "email"
           ]
+        },
+        "user_username_unique": {
+          "name": "user_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
         }
       },
       "policies": {},
@@ -384,7 +397,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },

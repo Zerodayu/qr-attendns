@@ -1,6 +1,6 @@
 {
-  "id": "7e2e8616-e9fa-4a47-a8cc-76581c461352",
-  "prevId": "0f9188df-0153-4457-b09d-374cbf83c26f",
+  "id": "dd03e334-b0c5-496d-a475-d7cc67e78ea5",
+  "prevId": "7e2e8616-e9fa-4a47-a8cc-76581c461352",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -530,13 +530,13 @@
       "columns": {
         "parentId": {
           "name": "parentId",
-          "type": "text",
+          "type": "serial",
           "primaryKey": false,
           "notNull": true
         },
         "studentId": {
           "name": "studentId",
-          "type": "integer",
+          "type": "serial",
           "primaryKey": false,
           "notNull": true
         }

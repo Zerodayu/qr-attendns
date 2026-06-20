@@ -7,7 +7,7 @@ export const section = pgTable("Section", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(), // e.g. "Grade 3 - Sampaguita"
   classCode: text("classCode").unique().notNull(), // parents use this to join
-  teacherId: text("teacherId")
+  teacherId: serial("teacherId")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

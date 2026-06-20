@@ -1,0 +1,1 @@
+ALTER TABLE "PushSubscription" ADD COLUMN "browserInfo" json DEFAULT '{"userAgent":"","browser":"","version":"","os":""}'::json NOT NULL;
