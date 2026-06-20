@@ -1,6 +1,6 @@
 {
-  "id": "41ad495e-64d3-4102-88a1-c93ea293fe2d",
-  "prevId": "9a1bf909-91ad-439f-b374-c985aa162061",
+  "id": "9a1bf909-91ad-439f-b374-c985aa162061",
+  "prevId": "df412249-819e-44b7-85f8-b5fa3f51b886",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -311,7 +311,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
@@ -356,7 +356,8 @@
         },
         "role": {
           "name": "role",
-          "type": "text",
+          "type": "role",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'parent'"

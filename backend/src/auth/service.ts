@@ -1,7 +1,8 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import db from "@/drizzle/index";
-import { serial } from "drizzle-orm/pg-core";
+import { openAPI } from "better-auth/plugins";
+import db from "../../drizzle";
+import { user, session, account, verification } from "../../drizzle/schema";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -9,8 +10,10 @@ export const auth = betterAuth({
 
   database: drizzleAdapter(db, {
     provider: "pg",
-    // schema, // gives the adapter visibility into user, session, account, etc.
+    schema: { user, session, account, verification },
   }),
+
+  plugins: [openAPI()],
 
   emailAndPassword: {
     enabled: true,
@@ -22,7 +25,7 @@ export const auth = betterAuth({
 
   advanced: {
     database: {
-      generateId: "serial",
+      generateId: false,
     },
   },
 
@@ -32,7 +35,7 @@ export const auth = betterAuth({
         type: "string",
         required: true,
         defaultValue: "parent",
-        input: false, // prevents users from self-assigning "teacher" at signup
+        input: false,
       },
     },
   },
