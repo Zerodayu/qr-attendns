@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import db from "@/drizzle/index";
-// import * as schema from "@/drizzle/schema";
+import { serial } from "drizzle-orm/pg-core";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -14,6 +14,16 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    password: {
+      hash: (pass) => Bun.password.hash(pass),
+      verify: ({ password, hash }) => Bun.password.verify(password, hash),
+    },
+  },
+
+  advanced: {
+    database: {
+      generateId: "serial",
+    },
   },
 
   user: {
@@ -24,6 +34,14 @@ export const auth = betterAuth({
         defaultValue: "parent",
         input: false, // prevents users from self-assigning "teacher" at signup
       },
+    },
+  },
+
+  session: {
+    expiresIn: 60 * 60 * 24 * 7,
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
     },
   },
 });
