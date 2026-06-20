@@ -7,6 +7,18 @@ const service = new sectionService();
 
 export const sectionRoutes = new Elysia({ prefix: "sections", tags: ["Sections"] })
   .use(authPlugin)
+  .get(
+    "/",
+    async ({ session, query }) => {
+      return await service.getTeacherSections(Number(session.user.id), query.date);
+    },
+    {
+      auth: true,
+      query: sectionModel.dateQuery,
+      response: sectionModel.teacherSectionsResponse,
+      detail: { description: "Get all sections with students and attendance for a date (teacher only, defaults to today)" },
+    },
+  )
   .post(
     "/",
     async ({ body, session, set }) => {
