@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -24,3 +25,14 @@ export const parentStudent = pgTable(
     pk: primaryKey({ columns: [table.parentId, table.studentId] }),
   }),
 );
+
+export const parentStudentRelations = relations(parentStudent, ({ one }) => ({
+  parent: one(user, {
+    fields: [parentStudent.parentId],
+    references: [user.id],
+  }),
+  student: one(student, {
+    fields: [parentStudent.studentId],
+    references: [student.id],
+  }),
+}));

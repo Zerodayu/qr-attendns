@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { pgTable, serial, text, json, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 
@@ -21,3 +22,10 @@ export const pushSubscription = pgTable("PushSubscription", {
     .notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
+
+export const pushSubscriptionRelations = relations(pushSubscription, ({ one }) => ({
+  user: one(user, {
+    fields: [pushSubscription.userId],
+    references: [user.id],
+  }),
+}));

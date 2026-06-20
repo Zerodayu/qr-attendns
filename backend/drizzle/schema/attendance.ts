@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   pgTable,
   serial,
@@ -27,3 +28,10 @@ export const attendance = pgTable(
     ),
   }),
 );
+
+export const attendanceRelations = relations(attendance, ({ one }) => ({
+  student: one(student, {
+    fields: [attendance.studentId],
+    references: [student.id],
+  }),
+}));
