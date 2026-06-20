@@ -1,0 +1,29 @@
+import {
+  pgTable,
+  serial,
+  integer,
+  date,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
+import { student } from "./student";
+
+// One row per student per day; timeOut gets filled in later via update.
+export const attendance = pgTable(
+  "Attendance",
+  {
+    id: serial("id").primaryKey(),
+    studentId: integer("studentId")
+      .notNull()
+      .references(() => student.id, { onDelete: "cascade" }),
+    date: date("date").notNull(),
+    timeIn: timestamp("timeIn"),
+    timeOut: timestamp("timeOut"),
+  },
+  (table) => ({
+    studentDateIdx: uniqueIndex("student_date_idx").on(
+      table.studentId,
+      table.date,
+    ),
+  }),
+);

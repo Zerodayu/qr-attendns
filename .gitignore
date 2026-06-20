@@ -1,5 +1,3 @@
-# app
-*/app/*
 
 # dependencies
 */node_modules
@@ -35,7 +33,7 @@
 */.env*
 
 # PGLite database
-*/data/
+*/database/
 
 # vercel
 */.vercel
