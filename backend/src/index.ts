@@ -1,3 +1,4 @@
+import "@dotenvx/dotenvx/config";
 import { Elysia } from "elysia";
 import { openapi } from "@elysiajs/openapi";
 import { auth } from "./auth/service";

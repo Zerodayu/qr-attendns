@@ -3,13 +3,15 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts",
+    "dev": "dotenvx run -f .env.dev -- bun run --watch src/index.ts",
+    "build": "dotenvx run -f .env.prod -- bun build src/index.ts --compile --outfile ./dist/server",
     "db:dev-gen": "bunx drizzle-kit generate --config=drizzle-dev.config.ts",
     "db:dev-push": "bunx drizzle-kit --config=drizzle-dev.config.ts push",
     "db:dev-mig": "bunx drizzle-kit --config=drizzle-dev.config.ts migrate",
     "db:dev-view": "bunx drizzle-kit --config=drizzle-dev.config.ts studio"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.75.0",
     "@electric-sql/pglite": "^0.5.3",
     "@elysiajs/cors": "^1.4.2",
     "@elysiajs/openapi": "^1.4.15",

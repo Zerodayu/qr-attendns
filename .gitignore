@@ -30,7 +30,7 @@
 */.pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-*/.env*
+*/.env.keys
 
 # PGLite database
 */database/
