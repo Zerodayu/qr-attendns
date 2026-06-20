@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client/edge';
-import { withAccelerate } from '@prisma/extension-accelerate';
-
-const prisma = new PrismaClient().$extends(withAccelerate());
+import { db } from '@/drizzle';
+import { pushSubscription } from '@/drizzle/schema';
 
 export async function POST(request: Request) {
   const webpush = (await import('web-push')).default;
@@ -14,7 +12,7 @@ export async function POST(request: Request) {
 
   try {
     const { body } = await request.json();
-    const subs = await prisma.pushSubscription.findMany();
+    const subs = await db.select().from(pushSubscription);
     for (const sub of subs) {
       try {
         // Validate and cast keys

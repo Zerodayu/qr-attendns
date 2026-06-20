@@ -1,14 +1,15 @@
-
-import { PrismaClient } from '@prisma/client/edge'
-import { withAccelerate } from '@prisma/extension-accelerate'
-
-const prisma = new PrismaClient().$extends(withAccelerate())
+import { db } from "@/drizzle";
+import { pushSubscription } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export async function POST(request: Request) {
   const { endpoint } = await request.json();
-  await prisma.pushSubscription.deleteMany({ where: { endpoint } });
+  await db
+    .delete(pushSubscription)
+    .where(eq(pushSubscription.endpoint, endpoint));
   return new Response(JSON.stringify({ success: true }), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 }
+
