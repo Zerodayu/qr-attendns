@@ -5,6 +5,7 @@ import { sectionRoutes } from "./sections/controller";
 import { pushRoutes } from "./push/controller";
 import { parentRoutes } from "./parent/controller";
 import { attendanceRoutes } from "./attendance/controller";
+import { subscriptionRoutes } from "./subscription/controller";
 
 export const apiRoutes = new Elysia({ prefix: "api/v1" })
   .use(authPlugin)
@@ -12,4 +13,5 @@ export const apiRoutes = new Elysia({ prefix: "api/v1" })
   .use(sectionRoutes)
   .use(pushRoutes)
   .use(parentRoutes)
-  .use(attendanceRoutes);
+  .use(attendanceRoutes)
+  .use(subscriptionRoutes);
