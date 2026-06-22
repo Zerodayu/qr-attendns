@@ -1,5 +1,5 @@
-import { db } from "../../drizzle";
-import { attendance, student } from "../../drizzle/schema";
+import { db } from "@drizzle";
+import { attendance, student } from "@drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { sendPushToParent } from "./push-sender";
 

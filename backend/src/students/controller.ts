@@ -2,6 +2,7 @@ import { Elysia, t } from "elysia";
 import { studentService } from "./service";
 import { studentModel } from "./model";
 import { authPlugin } from "../auth/controller";
+import { requireTeacherPlan } from "@lib/guard";
 
 const service = new studentService();
 
@@ -13,10 +14,8 @@ export const studentRoutes = new Elysia({
   .post(
     "/:sectionId/students",
     async ({ body, params, session, set }) => {
-      if (session.user.role !== "teacher") {
-        set.status = 403;
-        return { error: "Only teachers can add students" };
-      }
+      const denied = requireTeacherPlan(session, set);
+      if (denied) return denied;
 
       try {
         return await service.createStudent({

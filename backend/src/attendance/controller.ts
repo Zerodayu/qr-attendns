@@ -2,6 +2,7 @@ import { Elysia, t } from "elysia";
 import { attendanceService } from "./service";
 import { attendanceModel } from "./model";
 import { authPlugin } from "../auth/controller";
+import { requireTeacherPlan } from "@lib/guard";
 
 const service = new attendanceService();
 
@@ -10,10 +11,9 @@ export const attendanceRoutes = new Elysia({ prefix: "attendance", tags: ["Atten
   .post(
     "/time-in",
     async ({ body, session, set }) => {
-      if (session.user.role !== "teacher") {
-        set.status = 403;
-        return { error: "Only teachers can mark attendance" };
-      }
+      const denied = requireTeacherPlan(session, set);
+      if (denied) return denied;
+
       try {
         return await service.markTimeIn(body.studentId, Number(session.user.id));
       } catch (err: unknown) {
@@ -35,10 +35,9 @@ export const attendanceRoutes = new Elysia({ prefix: "attendance", tags: ["Atten
   .post(
     "/time-out",
     async ({ body, session, set }) => {
-      if (session.user.role !== "teacher") {
-        set.status = 403;
-        return { error: "Only teachers can mark attendance" };
-      }
+      const denied = requireTeacherPlan(session, set);
+      if (denied) return denied;
+
       try {
         return await service.markTimeOut(body.studentId, Number(session.user.id));
       } catch (err: unknown) {

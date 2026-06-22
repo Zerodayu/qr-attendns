@@ -2,6 +2,7 @@ import { Elysia, t } from "elysia";
 import { sectionService } from "./service";
 import { sectionModel } from "./model";
 import { authPlugin } from "../auth/controller";
+import { requireTeacherPlan } from "@lib/guard";
 
 const service = new sectionService();
 
@@ -9,7 +10,10 @@ export const sectionRoutes = new Elysia({ prefix: "sections", tags: ["Sections"]
   .use(authPlugin)
   .get(
     "/",
-    async ({ session, query }) => {
+    async ({ session, query, set }) => {
+      const denied = requireTeacherPlan(session, set);
+      if (denied) return denied;
+
       return await service.getTeacherSections(Number(session.user.id), query.date);
     },
     {
@@ -22,10 +26,8 @@ export const sectionRoutes = new Elysia({ prefix: "sections", tags: ["Sections"]
   .post(
     "/",
     async ({ body, session, set }) => {
-      if (session.user.role !== "teacher") {
-        set.status = 403;
-        return { error: "Only teachers can create sections" };
-      }
+      const denied = requireTeacherPlan(session, set);
+      if (denied) return denied;
 
       return await service.createSection({
         ...body,

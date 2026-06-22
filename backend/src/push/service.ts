@@ -1,5 +1,5 @@
-import { db } from "../../drizzle";
-import { pushSubscription } from "../../drizzle/schema";
+import { db } from "@drizzle";
+import { pushSubscription } from "@drizzle/schema";
 import { eq, and } from "drizzle-orm";
 
 export class pushService {

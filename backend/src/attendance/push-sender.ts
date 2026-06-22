@@ -1,6 +1,6 @@
 import { env } from "@env";
-import { db } from "../../drizzle";
-import { parentStudent, pushSubscription } from "../../drizzle/schema";
+import { db } from "@drizzle";
+import { parentStudent, pushSubscription } from "@drizzle/schema";
 import { eq } from "drizzle-orm";
 
 let _webpush: any = null;

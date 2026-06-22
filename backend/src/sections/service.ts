@@ -1,5 +1,5 @@
-import { db } from "../../drizzle";
-import { section, student, attendance } from "../../drizzle/schema";
+import { db } from "@drizzle";
+import { section, student, attendance } from "@drizzle/schema";
 import { eq, and, inArray } from "drizzle-orm";
 
 export class sectionService {
