@@ -50,6 +50,13 @@
       "when": 1782145137776,
       "tag": "0006_dazzling_zodiak",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1782148681109,
+      "tag": "0007_sloppy_inhumans",
+      "breakpoints": true
     }
   ]
 }
