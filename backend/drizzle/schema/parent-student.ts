@@ -1,11 +1,5 @@
 import { relations } from "drizzle-orm";
-import {
-  pgTable,
-  text,
-  integer,
-  primaryKey,
-  serial,
-} from "drizzle-orm/pg-core";
+import { pgTable, primaryKey, serial } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 import { student } from "./student";
 
@@ -21,9 +15,7 @@ export const parentStudent = pgTable(
       .notNull()
       .references(() => student.id, { onDelete: "cascade" }),
   },
-  (table) => ({
-    pk: primaryKey({ columns: [table.parentId, table.studentId] }),
-  }),
+  (table) => [primaryKey({ columns: [table.parentId, table.studentId] })],
 );
 
 export const parentStudentRelations = relations(parentStudent, ({ one }) => ({

@@ -21,12 +21,7 @@ export const attendance = pgTable(
     timeIn: timestamp("timeIn"),
     timeOut: timestamp("timeOut"),
   },
-  (table) => ({
-    studentDateIdx: uniqueIndex("student_date_idx").on(
-      table.studentId,
-      table.date,
-    ),
-  }),
+  (table) => [uniqueIndex("student_date_idx").on(table.studentId, table.date)],
 );
 
 export const attendanceRelations = relations(attendance, ({ one }) => ({
