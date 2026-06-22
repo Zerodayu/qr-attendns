@@ -32,6 +32,7 @@ export const auth = betterAuth({
   },
 
   advanced: {
+    cookiePrefix: "qr-attendnz",
     database: {
       generateId: false,
     },
