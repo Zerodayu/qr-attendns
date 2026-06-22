@@ -5,6 +5,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "dotenvx run -f .env.dev -- bun run --watch src/index.ts",
     "build": "dotenvx run -f .env.prod -- bun build src/index.ts --compile --outfile ./dist/server",
+    "env:ec": "bunx dotenvx encrypt -f",
+    "env:dc": "bunx dotenvx decrypt -f",
     "db:dev-gen": "bunx drizzle-kit generate --config=drizzle-dev.config.ts",
     "db:dev-push": "bunx drizzle-kit --config=drizzle-dev.config.ts push",
     "db:dev-mig": "bunx drizzle-kit --config=drizzle-dev.config.ts migrate",
@@ -12,13 +14,14 @@
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.75.0",
-    "@electric-sql/pglite": "^0.5.3",
     "@elysiajs/cors": "^1.4.2",
     "@elysiajs/openapi": "^1.4.15",
+    "@neondatabase/serverless": "^1.1.0",
     "better-auth": "^1.6.20",
     "drizzle-orm": "^0.45.2",
     "elysia": "latest",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/web-push": "^3.6.4",

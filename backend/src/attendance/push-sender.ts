@@ -1,3 +1,4 @@
+import { env } from "@env";
 import { db } from "../../drizzle";
 import { parentStudent, pushSubscription } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -6,11 +7,7 @@ let _webpush: any = null;
 async function getWebpush() {
   if (!_webpush) {
     const webpush = (await import("web-push")).default;
-    webpush.setVapidDetails(
-      process.env.VAPID_EMAIL || "mailto:qr.attendnz@gmail.com",
-      process.env.VAPID_PUBLIC_KEY!,
-      process.env.VAPID_PRIVATE_KEY!,
-    );
+    webpush.setVapidDetails(env.VAPID_EMAIL, env.VAPID_PUBLIC_KEY, env.VAPID_PRIVATE_KEY);
     _webpush = webpush;
   }
   return _webpush;
