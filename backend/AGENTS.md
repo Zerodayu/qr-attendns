@@ -19,10 +19,12 @@ src/
 - **service.ts**: Class-based business logic. One class per feature. Throws on errors; controller handles status codes.
 - **model.ts**: Validation schemas using Elysia's `t` from `elysia`. Export both schema objects and `Static<typeof ...>` types.
 - **routes.ts**: Import and chain feature plugins: `.use(featureRoutes)`. The `api/v1/` prefix is set here, so feature routes use relative paths.
+- **env vars**: Always import `env` from `@env` instead of accessing `process.env` directly. The `env.ts` file uses zod validation, so missing vars fail at startup with a clear error.
 
 ## System Design Documentation
 
 When adding a new feature (new endpoints, database tables, service methods, or auth changes) or modifying existing ones, update `SYSTEM-DESIGN.md` to reflect the changes. Keep the following sections in sync:
+
 - **API Endpoints** — add/modify route table entries
 - **Database Schema** — add/modify table definitions and ERD
 - **Roles Table / Authorization Matrix** — update if role checks change
