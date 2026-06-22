@@ -7,10 +7,10 @@
     "build": "dotenvx run -f .env.prod -- bun build src/index.ts --compile --outfile ./dist/server",
     "env:ec": "bunx dotenvx encrypt -f",
     "env:dc": "bunx dotenvx decrypt -f",
-    "db:dev-gen": "bunx drizzle-kit generate --config=drizzle-dev.config.ts",
-    "db:dev-push": "bunx drizzle-kit --config=drizzle-dev.config.ts push",
-    "db:dev-mig": "bunx drizzle-kit --config=drizzle-dev.config.ts migrate",
-    "db:dev-view": "bunx drizzle-kit --config=drizzle-dev.config.ts studio"
+    "db:dev-gen": "dotenvx run -f .env.dev -- bunx drizzle-kit generate --config=drizzle-dev.config.ts",
+    "db:dev-push": "dotenvx run -f .env.dev -- bunx drizzle-kit --config=drizzle-dev.config.ts push",
+    "db:dev-mig": "dotenvx run -f .env.dev -- bunx drizzle-kit --config=drizzle-dev.config.ts migrate",
+    "db:dev-view": "dotenvx run -f .env.dev -- bunx drizzle-kit --config=drizzle-dev.config.ts studio"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.75.0",
