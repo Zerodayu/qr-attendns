@@ -43,6 +43,13 @@
       "when": 1782143275174,
       "tag": "0005_handy_gressill",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782145137776,
+      "tag": "0006_dazzling_zodiak",
+      "breakpoints": true
     }
   ]
 }
