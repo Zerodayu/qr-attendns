@@ -3,5 +3,7 @@ export * from "./attendance";
 export * from "./device";
 export * from "./enums";
 export * from "./parent-student";
+export * from "./plan-feature";
 export * from "./section";
 export * from "./student";
+export * from "./subscription";
