@@ -74,6 +74,13 @@ backend/
     │   ├── controller.ts          # POST /parent/join, /parent/students
     │   ├── service.ts             # parentService
     │   └── model.ts               # Validation schemas
+    ├── subscription/
+    │   ├── controller.ts          # POST /subscription/create-invoice, webhook, status, cancel
+    │   ├── service.ts             # Xendit subscription management
+    │   └── model.ts               # Validation schemas
+    ├── plans/
+    │   ├── guard.ts               # teacherGuard plugin (derive isTeacher, userPlan)
+    │   └── service.ts             # Feature flag checks, plan utilities
     └── push/
         ├── controller.ts          # GET/POST/DELETE /subscriptions
         ├── service.ts             # pushService
@@ -143,11 +150,13 @@ backend/
    - Calls `auth.api.getSession({ headers })` to validate the session cookie/token.
    - No valid session → returns `401 Unauthorized`.
    - Valid session → injects `{ session }` into the handler context.
-5. **Route handler** (controller) runs:
-   - **Role check**: handler checks `session.user.role` manually (e.g. `if (role !== "teacher") → 403`).
+5. **teacherGuard plugin** (`.derive`) extracts `isTeacher` and `userPlan` from the session for downstream use.
+6. **Route handler** (controller) runs:
+   - **Role check**: handler checks `session.user.role.includes("teacher")` — supports multi-role users.
+   - **Plan check**: teacher routes also verify `session.user.plan !== "free"` — teachers must have Essential or Premium.
    - **Service method** called: performs business logic via Drizzle ORM queries against Neon PostgreSQL.
    - **Push notification** (optional): attendance service calls `sendPushToParent()` → `web-push` dispatches to parent browsers.
-6. **JSON response** returned.
+7. **JSON response** returned.
 
 ---
 
@@ -182,32 +191,54 @@ A custom Elysia macro named `auth` is defined on the `authPlugin`. Any route wit
 
 ### Role-Based Authorization
 
-The `role` field is stored on the `user` table (default: `"parent"`). Role checks are performed inline in each controller handler after the auth macro resolves.
+The `role` field is stored on the `user` table as a `text[]` array (default: `["parent"]`). Users can have one or both roles. Role checks use `session.user.role.includes("teacher")`.
+
+Teachers are **required** to have a paid plan (`essential` or `premium`) to access teacher endpoints. Users with `plan: "free"` who also have `role: ["teacher"]` are blocked from teacher actions until they subscribe.
+
+#### Plan Feature Matrix
+
+| Feature Key                     | Free | Essential | Premium |
+| ------------------------------- | ---- | --------- | ------- |
+| `attendance_download_csv`       | ✅   | ✅        | ✅      |
+| `attendance_download_xlsx`      | ✅   | ✅        | ✅      |
+| `attendance_view_yesterday`     | ❌   | ✅        | ✅      |
+| `attendance_download_yesterday` | ❌   | ✅        | ✅      |
+| `attendance_download_pdf`       | ❌   | ❌        | ✅      |
+| `attendance_weekly_report`      | ❌   | ❌        | ✅      |
+| `attendance_monthly_report`     | ❌   | ❌        | ✅      |
+| `attendance_analytics`          | ❌   | ❌        | ✅      |
+| `custom_qr_card`                | ❌   | ❌        | ✅      |
+| `bulk_student_import`           | ❌   | ❌        | ✅      |
+| `sms_notification`              | ❌   | ❌        | ⏳      |
 
 #### Roles Table
 
-| Role                | Default           | Authorized Actions                                                                  |
-| ------------------- | ----------------- | ----------------------------------------------------------------------------------- |
-| `teacher`           | No                | Create sections, add students, mark time-in/time-out, view sections with attendance |
-| `parent`            | **Yes** (default) | Join sections via class code, link to students, receive push notifications          |
-| any (authenticated) | —                 | Auth flows (sign-up/sign-in/out), manage own push subscriptions                     |
+| Role                | Default              | Plan Required | Authorized Actions                                                                  |
+| ------------------- | -------------------- | ------------- | ----------------------------------------------------------------------------------- |
+| `teacher`           | No                   | Essential+    | Create sections, add students, mark time-in/time-out, view sections with attendance |
+| `parent`            | **Yes** (default)    | Free          | Join sections via class code, link to students, receive push notifications          |
+| any (authenticated) | —                    | —             | Auth flows (sign-up/sign-in/out), manage own push subscriptions                     |
 
 #### Authorization Matrix
 
-| Endpoint                                 | Auth Required | Role Required | Access Denied          |
-| ---------------------------------------- | ------------- | ------------- | ---------------------- |
-| `POST /auth/*` (sign-up, sign-in)        | No            | None          | —                      |
-| `POST /auth/*` (session, sign-out, etc.) | Yes           | None          | 401 if invalid session |
-| `GET /sections`                          | Yes           | `teacher`     | 403                    |
-| `POST /sections`                         | Yes           | `teacher`     | 403                    |
-| `POST /sections/:sectionId/students`     | Yes           | `teacher`     | 403                    |
-| `POST /attendance/time-in`               | Yes           | `teacher`     | 403                    |
-| `POST /attendance/time-out`              | Yes           | `teacher`     | 403                    |
-| `POST /parent/join`                      | Yes           | any           | —                      |
-| `POST /parent/students`                  | Yes           | any           | —                      |
-| `GET /subscriptions`                     | Yes           | any           | —                      |
-| `POST /subscriptions`                    | Yes           | any           | —                      |
-| `DELETE /subscriptions/:id`              | Yes           | any           | —                      |
+| Endpoint                                 | Auth Required | Role Required | Plan Required | Access Denied          |
+| ---------------------------------------- | ------------- | ------------- | ------------- | ---------------------- |
+| `POST /auth/*` (sign-up, sign-in)        | No            | None          | —             | —                      |
+| `POST /auth/*` (session, sign-out, etc.) | Yes           | None          | —             | 401 if invalid session |
+| `GET /sections`                          | Yes           | `teacher`     | Essential+    | 403                    |
+| `POST /sections`                         | Yes           | `teacher`     | Essential+    | 403                    |
+| `POST /sections/:sectionId/students`     | Yes           | `teacher`     | Essential+    | 403                    |
+| `POST /attendance/time-in`               | Yes           | `teacher`     | Essential+    | 403                    |
+| `POST /attendance/time-out`              | Yes           | `teacher`     | Essential+    | 403                    |
+| `POST /parent/join`                      | Yes           | any           | —             | —                      |
+| `POST /parent/students`                  | Yes           | any           | —             | —                      |
+| `GET /subscriptions`                     | Yes           | any           | —             | —                      |
+| `POST /subscriptions`                    | Yes           | any           | —             | —                      |
+| `DELETE /subscriptions/:id`              | Yes           | any           | —             | —                      |
+| `POST /subscription/create-invoice`      | Yes           | any           | —             | —                      |
+| `GET /subscription/status`               | Yes           | any           | —             | —                      |
+| `POST /subscription/cancel`              | Yes           | any           | —             | —                      |
+| `POST /subscription/webhook`             | No            | None          | —             | —                      |
 
 ---
 
@@ -222,6 +253,7 @@ erDiagram
     user ||--o{ section : teaches
     user ||--o{ parentStudent : "is parent of"
     user ||--o{ pushSubscription : "owns push devices"
+    user ||--o{ subscription : subscribes
 
     section ||--o{ student : contains
     student ||--o{ attendance : has
@@ -232,17 +264,18 @@ erDiagram
 
 #### `user` (better-auth extended)
 
-| Column        | Type      | Constraints                  | Notes                 |
-| ------------- | --------- | ---------------------------- | --------------------- |
-| id            | serial    | PK                           |                       |
-| name          | text      | NOT NULL                     |                       |
-| email         | text      | NOT NULL, UNIQUE             |                       |
-| emailVerified | boolean   | DEFAULT false                |                       |
-| image         | text      | nullable                     |                       |
-| username      | text      | UNIQUE                       | from username plugin  |
-| role          | text      | NOT NULL, DEFAULT `'parent'` | `teacher` or `parent` |
-| createdAt     | timestamp | DEFAULT now()                |                       |
-| updatedAt     | timestamp | DEFAULT now()                | auto-updated          |
+| Column        | Type      | Constraints                     | Notes                                    |
+| ------------- | --------- | ------------------------------- | ---------------------------------------- |
+| id            | serial    | PK                              |                                          |
+| name          | text      | NOT NULL                        |                                          |
+| email         | text      | NOT NULL, UNIQUE                |                                          |
+| emailVerified | boolean   | DEFAULT false                   |                                          |
+| image         | text      | nullable                        |                                          |
+| username      | text      | UNIQUE                          | from username plugin                     |
+| role          | text[]    | NOT NULL, DEFAULT `['parent']`  | Array: `['teacher']`, `['parent']`, both |
+| plan          | text      | NOT NULL, DEFAULT `'free'`      | `free`, `essential`, or `premium`        |
+| createdAt     | timestamp | DEFAULT now()                   |                                          |
+| updatedAt     | timestamp | DEFAULT now()                   | auto-updated                             |
 
 #### `session` (better-auth)
 
@@ -335,11 +368,48 @@ erDiagram
 | browserInfo | json                  | DEFAULT `{}`      | `{ userAgent, browser, version, os, deviceType? }` |
 | createdAt   | timestamp             | DEFAULT now()     |                                                    |
 
+#### `PlanFeature`
+
+| Column      | Type      | Constraints                          | Notes                                           |
+| ----------- | --------- | ------------------------------------ | ----------------------------------------------- |
+| id          | serial    | PK                                   |                                                 |
+| plan        | text      | NOT NULL                             | `free`, `essential`, or `premium`               |
+| featureKey  | text      | NOT NULL                             | e.g. `attendance_download_csv`                  |
+| isEnabled   | boolean   | DEFAULT true                         |                                                 |
+| config      | jsonb     | DEFAULT `{}`                         | Extra config (limits, quotas, etc.)             |
+| createdAt   | timestamp | DEFAULT now()                        |                                                 |
+| updatedAt   | timestamp | DEFAULT now()                        | auto-updated                                    |
+
+**Unique constraint**: `(plan, featureKey)`
+
+#### `Subscription`
+
+| Column               | Type                  | Constraints       | Notes                                    |
+| -------------------- | --------------------- | ----------------- | ---------------------------------------- |
+| id                   | serial                | PK                |                                          |
+| userId               | serial (FK → user.id) | NOT NULL, CASCADE | One subscription per user                |
+| plan                 | text                  | NOT NULL          | `essential` or `premium`                 |
+| status               | text                  | DEFAULT inactive  | `active`, `inactive`, `cancelled`, etc.  |
+| xenditSubscriptionId | text                  | nullable          | Xendit subscription reference            |
+| xenditInvoiceId      | text                  | nullable          | Xendit invoice reference                 |
+| currentPeriodStart   | timestamp             | nullable          | Billing period start                     |
+| currentPeriodEnd     | timestamp             | nullable          | Billing period end                       |
+| trialEndsAt          | timestamp             | nullable          | Trial expiration                         |
+| cancelledAt          | timestamp             | nullable          | When cancelled                           |
+| createdAt            | timestamp             | DEFAULT now()     |                                          |
+| updatedAt            | timestamp             | DEFAULT now()     | auto-updated                             |
+
+**Unique constraint**: `(userId)` — one subscription per user.
+
 ### Enums
 
 ```typescript
 roleEnum = pgEnum("role", ["teacher", "parent"]);
 genderEnum = pgEnum("gender", ["male", "female", "other"]);
+userPlanEnum = pgEnum("user_plan", ["free", "essential", "premium"]);
+subscriptionStatusEnum = pgEnum("subscription_status", [
+  "active", "inactive", "cancelled", "expired", "trialing",
+]);
 ```
 
 ---
@@ -440,6 +510,28 @@ These routes are generated by better-auth. Paths are remapped from `/auth/*` to 
 | `unregister(userId, id)`                         | Deletes a subscription only if it belongs to the user.      |
 | `list(userId)`                                   | Lists all subscriptions for the user.                       |
 | `getSubscriptionsByParentId(parentId)`           | Retrieves subscriptions by parent ID (used by push sender). |
+
+### `planService` (`src/plans/service.ts`)
+
+| Method                                     | Description                                                                   |
+| ------------------------------------------ | ----------------------------------------------------------------------------- |
+| `meetsMinimumPlan(userPlan, minimum)`      | Checks if `userPlan` >= `minimum` using hierarchy (`free` < `essential` < `premium`). |
+| `hasFeatureAccess(userPlan, featureKey)`   | Queries `plan_feature` table to check if a feature is enabled for the plan.   |
+| `getEnabledFeatures(userPlan)`             | Returns all enabled feature keys for a given plan.                            |
+
+### `teacherGuard` (`src/plans/guard.ts`)
+
+A scoped derive plugin that extracts `isTeacher` and `userPlan` from the session after auth resolves. Used by routes that need quick plan/role checks.
+
+### `subscriptionService` (`src/subscription/service.ts`)
+
+| Method                                                   | Description                                                            |
+| -------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `createInvoice(userId, plan)`                            | Creates a Xendit invoice for initial payment or subscription upgrade.  |
+| `handleWebhook(event)`                                   | Processes Xendit webhook events (payment success, subscription update).|
+| `getSubscriptionStatus(userId)`                          | Returns the user's current subscription status and details.            |
+| `cancelSubscription(userId)`                             | Cancels an active subscription via Xendit API.                         |
+| `syncSubscriptionFromXendit(userId)`                     | Syncs subscription status from Xendit to local DB.                     |
 
 ---
 
