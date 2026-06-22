@@ -1,6 +1,7 @@
 import "@dotenvx/dotenvx/config";
 import { Elysia } from "elysia";
 import { openapi } from "@elysiajs/openapi";
+import { env } from "@env";
 import { auth } from "./auth/service";
 import { OpenAPI } from "./auth/controller";
 import { apiRoutes } from "./routes";
@@ -22,7 +23,7 @@ const app = new Elysia()
   )
   .use(
     cors({
-      origin: "http://localhost:3001",
+      origin: [env.FRONTEND_URL, "http://localhost:3001"],
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true,
       allowedHeaders: ["Content-Type", "Authorization"],

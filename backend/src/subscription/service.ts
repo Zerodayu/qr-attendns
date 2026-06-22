@@ -1,8 +1,10 @@
-import { Xendit } from "xendit-node";
 import { eq } from "drizzle-orm";
+import crypto from "crypto";
 import { env } from "@env";
 import db from "@drizzle";
 import { subscription, user } from "@drizzle/schema";
+
+const PAYMONGO_API = "https://api.paymongo.com/v1";
 
 const PLAN_PRICES: Record<string, number> = {
   essential: 20000,
@@ -11,13 +13,31 @@ const PLAN_PRICES: Record<string, number> = {
 
 const SUBSCRIPTION_DURATION_DAYS = 30;
 
-let xenditInstance: Xendit | null = null;
+function basicAuth() {
+  return btoa(`${env.PAYMONGO_SECRET_KEY}:`);
+}
 
-function getXendit() {
-  if (!xenditInstance) {
-    xenditInstance = new Xendit({ secretKey: env.XENDIT_SECRET_API_KEY });
+async function paymongoFetch(path: string, options: RequestInit = {}) {
+  const res = await fetch(`${PAYMONGO_API}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${basicAuth()}`,
+      ...options.headers,
+    },
+  });
+
+  const json = await res.json();
+
+  if (!res.ok) {
+    const msg =
+      json.errors?.[0]?.detail ??
+      json.errors?.[0]?.title ??
+      "PayMongo API error";
+    throw new Error(msg);
   }
-  return xenditInstance;
+
+  return json;
 }
 
 export async function createInvoice(
@@ -35,32 +55,36 @@ export async function createInvoice(
     .limit(1)
     .then((r) => r[0]);
 
-  if (existing?.status === "pending") {
+  if (existing?.status === "pending" && existing.providerLinkId) {
     return {
-      invoiceUrl: existing.xenditInvoiceId
-        ? `https://checkout.xendit.co/web/${existing.xenditInvoiceId}`
-        : null,
-      invoiceId: existing.xenditInvoiceId,
+      checkoutUrl: `https://checkout.paymongo.com/${existing.providerLinkId.replace("link_", "")}`,
+      linkId: existing.providerLinkId,
     };
   }
 
   const externalId = `sub-${userId}-${plan}-${Date.now()}`;
 
-  const { Invoice } = getXendit();
-  const invoice = await Invoice.createInvoice({
+  const body = {
     data: {
-      externalId,
-      amount: price,
-      currency: "PHP",
-      description: `QR Attendnz ${plan === "essential" ? "Essential" : "Premium"} — Monthly Subscription`,
-      payerEmail,
-      invoiceDuration: 86400,
-      successRedirectUrl: `${env.BETTER_AUTH_URL}/payment/success`,
-      failureRedirectUrl: `${env.BETTER_AUTH_URL}/payment/failed`,
+      attributes: {
+        amount: price,
+        description: `QR Attendnz ${plan === "essential" ? "Essential" : "Premium"} — Monthly Subscription`,
+        remarks: externalId,
+        redirect: {
+          success: `${env.FRONTEND_URL}/payment/success`,
+          failed: `${env.FRONTEND_URL}/payment/failed`,
+        },
+      },
     },
+  };
+
+  const result = await paymongoFetch("/links", {
+    method: "POST",
+    body: JSON.stringify(body),
   });
 
-  const invoiceId = invoice.id!;
+  const linkId: string = result.data.id;
+  const checkoutUrl: string = result.data.attributes.checkout_url;
 
   await db
     .insert(subscription)
@@ -68,29 +92,31 @@ export async function createInvoice(
       userId,
       plan,
       status: "pending",
-      xenditInvoiceId: invoiceId,
+      provider: "paymongo",
+      providerLinkId: linkId,
     })
     .onConflictDoUpdate({
       target: subscription.userId,
       set: {
         plan,
         status: "pending",
-        xenditInvoiceId: invoiceId,
-        xenditSubscriptionId: null,
+        provider: "paymongo",
+        providerLinkId: linkId,
+        providerPaymentId: null,
         currentPeriodStart: null,
         currentPeriodEnd: null,
         cancelledAt: null,
       },
     });
 
-  return { invoiceUrl: invoice.invoiceUrl, invoiceId };
+  return { checkoutUrl, linkId };
 }
 
-export async function handleInvoicePaid(invoiceId: string) {
+export async function handleLinkPaymentPaid(linkId: string, paymentId: string) {
   const sub = await db
     .select()
     .from(subscription)
-    .where(eq(subscription.xenditInvoiceId, invoiceId))
+    .where(eq(subscription.providerLinkId, linkId))
     .limit(1)
     .then((r) => r[0]);
 
@@ -104,24 +130,22 @@ export async function handleInvoicePaid(invoiceId: string) {
     .update(subscription)
     .set({
       status: "active",
+      providerPaymentId: paymentId,
       currentPeriodStart: now,
       currentPeriodEnd: periodEnd,
     })
     .where(eq(subscription.id, sub.id));
 
-  await db
-    .update(user)
-    .set({ plan: sub.plan })
-    .where(eq(user.id, sub.userId));
+  await db.update(user).set({ plan: sub.plan }).where(eq(user.id, sub.userId));
 
   return true;
 }
 
-export async function handleInvoiceExpired(invoiceId: string) {
+export async function handleLinkPaymentFailed(linkId: string) {
   await db
     .update(subscription)
-    .set({ status: "expired" })
-    .where(eq(subscription.xenditInvoiceId, invoiceId));
+    .set({ status: "failed" })
+    .where(eq(subscription.providerLinkId, linkId));
 }
 
 export async function getStatus(userId: number) {
@@ -137,7 +161,9 @@ export async function getStatus(userId: number) {
   return {
     plan: sub.plan,
     status: sub.status,
-    xenditSubscriptionId: sub.xenditSubscriptionId,
+    provider: sub.provider,
+    providerLinkId: sub.providerLinkId,
+    providerPaymentId: sub.providerPaymentId,
     currentPeriodStart: sub.currentPeriodStart?.toISOString() ?? null,
     currentPeriodEnd: sub.currentPeriodEnd?.toISOString() ?? null,
     trialEndsAt: sub.trialEndsAt?.toISOString() ?? null,
@@ -160,10 +186,7 @@ export async function cancelSubscription(userId: number) {
     .set({ status: "cancelled", cancelledAt: new Date() })
     .where(eq(subscription.id, sub.id));
 
-  await db
-    .update(user)
-    .set({ plan: "free" })
-    .where(eq(user.id, sub.userId));
+  await db.update(user).set({ plan: "free" }).where(eq(user.id, sub.userId));
 
   return true;
 }
@@ -192,7 +215,34 @@ export async function checkAndExpireStaleSubscriptions() {
   }
 }
 
-export function verifyWebhookToken(headers: Record<string, string | undefined>) {
-  const token = headers["x-callback-token"];
-  return token === env.XENDIT_WEBHOOK_TOKEN;
+export async function verifyWebhookSignature(
+  rawBody: string,
+  signatureHeader: string,
+): Promise<boolean> {
+  if (!signatureHeader) return false;
+
+  try {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(env.PAYMONGO_WEBHOOK_SECRET),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"],
+    );
+    const sigBuf = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      new TextEncoder().encode(rawBody),
+    );
+    const expected = Array.from(new Uint8Array(sigBuf))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+
+    const a = Buffer.from(expected);
+    const b = Buffer.from(signatureHeader);
+    if (a.length !== b.length) return false;
+    return crypto.timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
 }

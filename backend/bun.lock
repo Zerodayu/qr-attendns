@@ -13,7 +13,6 @@
         "drizzle-orm": "^0.45.2",
         "elysia": "latest",
         "web-push": "^3.6.7",
-        "xendit-node": "^7.0.0",
         "zod": "^4.4.3",
       },
       "devDependencies": {
@@ -333,8 +332,6 @@
     "web-push": ["web-push@3.6.7", "", { "dependencies": { "asn1.js": "^5.3.0", "http_ece": "1.2.0", "https-proxy-agent": "^7.0.0", "jws": "^4.0.0", "minimist": "^1.2.5" }, "bin": { "web-push": "src/cli.js" } }, "sha512-OpiIUe8cuGjrj3mMBFWY+e4MMIkW3SVT+7vEIjvD9kejGUypv8GPDf84JdPWskK8zMRIJ6xYGm+Kxr8YkPyA0A=="],
 
     "which": ["which@4.0.0", "", { "dependencies": { "isexe": "^3.1.1" }, "bin": { "node-which": "bin/which.js" } }, "sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg=="],
-
-    "xendit-node": ["xendit-node@7.0.0", "", {}, "sha512-atsCQ9femoWLu+hU5rY0TZ+ZhqSYbpTtABZN7rGMhhBh1xLhTuY1rgLfoaXzFiRt3eOQRqsew78wPUcQn1QckA=="],
 
     "yocto-spinner": ["yocto-spinner@1.2.0", "", { "dependencies": { "yoctocolors": "^2.1.1" } }, "sha512-Yw0hUB6UA3o4YUgKy3oSe9a4cxoaZ9sBfYDw+JSxo6Id0KoJGoxzPA24qqUXYKBWABs/zDSGTz9kww7t3F0XGw=="],
 

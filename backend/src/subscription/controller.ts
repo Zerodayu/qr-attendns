@@ -3,11 +3,11 @@ import { authPlugin } from "../auth/controller";
 import { subscriptionModel } from "./model";
 import {
   createInvoice,
-  handleInvoicePaid,
-  handleInvoiceExpired,
+  handleLinkPaymentPaid,
+  handleLinkPaymentFailed,
   getStatus,
   cancelSubscription,
-  verifyWebhookToken,
+  verifyWebhookSignature,
   checkAndExpireStaleSubscriptions,
 } from "./service";
 
@@ -25,7 +25,7 @@ export const subscriptionRoutes = new Elysia({
           body.plan,
           session.user.email,
         );
-        if (!result.invoiceUrl) {
+        if (!result.checkoutUrl) {
           set.status = 409;
           return { error: "A pending invoice already exists" };
         }
@@ -43,34 +43,55 @@ export const subscriptionRoutes = new Elysia({
         400: subscriptionModel.invoiceError,
         409: subscriptionModel.invoiceError,
       },
-      detail: { description: "Create a Xendit invoice for subscription payment" },
+      detail: { description: "Create a PayMongo payment link for subscription" },
     },
   )
   .post(
     "/webhook",
     async ({ request, set }) => {
-      const headers: Record<string, string | undefined> = {};
-      request.headers.forEach((value, key) => {
-        headers[key.toLowerCase()] = value;
-      });
+      const rawBody = await request.clone().text();
+      const signatureHeader =
+        request.headers.get("webhook-signature") ?? "";
 
-      if (!verifyWebhookToken(headers)) {
+      const valid = await verifyWebhookSignature(rawBody, signatureHeader);
+      if (!valid) {
         set.status = 401;
-        return { error: "Invalid webhook token" };
+        return { error: "Invalid webhook signature" };
       }
 
-      const body = await request.clone().json().catch(() => null);
-      if (!body || typeof body !== "object" || !("id" in body) || !("status" in body)) {
+      type PayMongoEvent = {
+        data: {
+          attributes: {
+            type: string;
+            data: {
+              id: string;
+              attributes: {
+                status: string;
+                payments?: Array<{ id: string }>;
+              };
+            };
+          };
+        };
+      };
+
+      let event: PayMongoEvent;
+      try {
+        event = JSON.parse(rawBody);
+      } catch {
         set.status = 400;
         return { error: "Invalid webhook payload" };
       }
 
-      const { id: invoiceId, status } = body as { id: string; status: string };
+      const {
+        type,
+        data: { id: linkId, attributes: linkAttrs },
+      } = event.data.attributes;
+      const paymentId = linkAttrs.payments?.[0]?.id;
 
-      if (status === "PAID") {
-        await handleInvoicePaid(invoiceId);
-      } else if (status === "EXPIRED") {
-        await handleInvoiceExpired(invoiceId);
+      if (type === "link.payment.paid" && linkAttrs.status === "paid") {
+        await handleLinkPaymentPaid(linkId, paymentId ?? "");
+      } else if (type === "link.payment.failed") {
+        await handleLinkPaymentFailed(linkId);
       }
 
       return { received: true };
@@ -82,7 +103,7 @@ export const subscriptionRoutes = new Elysia({
         400: subscriptionModel.webhookError,
         401: subscriptionModel.webhookError,
       },
-      detail: { description: "Xendit webhook endpoint for invoice events" },
+      detail: { description: "PayMongo webhook endpoint for link payment events" },
     },
   )
   .get(

@@ -6,14 +6,16 @@ export const subscriptionModel = {
   }),
 
   createInvoiceResponse: t.Object({
-    invoiceUrl: t.String(),
-    invoiceId: t.String(),
+    checkoutUrl: t.String(),
+    linkId: t.String(),
   }),
 
   subscriptionStatusResponse: t.Object({
     plan: t.String(),
     status: t.String(),
-    xenditSubscriptionId: t.Nullable(t.String()),
+    provider: t.String(),
+    providerLinkId: t.Nullable(t.String()),
+    providerPaymentId: t.Nullable(t.String()),
     currentPeriodStart: t.Nullable(t.String()),
     currentPeriodEnd: t.Nullable(t.String()),
     trialEndsAt: t.Nullable(t.String()),
