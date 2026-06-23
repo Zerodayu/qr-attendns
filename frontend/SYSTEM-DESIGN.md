@@ -10,21 +10,22 @@ The frontend is a Next.js 16 application using the App Router, styled with shadc
 
 ## Technology Stack
 
-| Layer             | Technology                  | Purpose                                     |
-| ----------------- | --------------------------- | ------------------------------------------- |
-| Framework         | **Next.js 16**              | React meta-framework (App Router, SSR, RSC) |
-| UI Library        | **React 19**                | Component rendering                         |
-| Styling           | **Tailwind CSS v4**         | Utility-first CSS                           |
-| Component Library | **shadcn/ui** (base-luma)   | Primitive UI components                     |
-| State Management  | **Zustand**                 | Lightweight UI state management             |
-| Validation        | **Zod**                     | Runtime env variable validation             |
-| Icons             | **lucide-react**            | Icon library                                |
-| Animations        | **motion**                  | Framer Motion animations                    |
-| Theme             | **next-themes**             | Dark/light mode                             |
-| QR Scanning       | **@zxing/browser**          | Browser-based QR code decoding              |
-| Fonts             | **Geist Mono** + **Outfit** | Monospace + sans-serif typefaces            |
-| Linting           | **ESLint** + Prettier       | Code quality & formatting                   |
-| Package Manager   | **Bun**                     | JavaScript runtime & package manager        |
+| Layer             | Technology                  | Purpose                                         |
+| ----------------- | --------------------------- | ----------------------------------------------- |
+| Framework         | **Next.js 16**              | React meta-framework (App Router, SSR, RSC)     |
+| UI Library        | **React 19**                | Component rendering                             |
+| Styling           | **Tailwind CSS v4**         | Utility-first CSS                               |
+| Component Library | **shadcn/ui** (base-luma)   | Primitive UI components                         |
+| Auth Client       | **better-auth/react**       | Client-side auth with session cookie management |
+| State Management  | **Zustand**                 | Lightweight UI state management                 |
+| Validation        | **Zod**                     | Runtime env variable validation                 |
+| Icons             | **lucide-react**            | Icon library                                    |
+| Animations        | **motion**                  | Framer Motion animations                        |
+| Theme             | **next-themes**             | Dark/light mode                                 |
+| QR Scanning       | **@zxing/browser**          | Browser-based QR code decoding                  |
+| Fonts             | **Geist Mono** + **Outfit** | Monospace + sans-serif typefaces                |
+| Linting           | **ESLint** + Prettier       | Code quality & formatting                       |
+| Package Manager   | **Bun**                     | JavaScript runtime & package manager            |
 
 ---
 
@@ -53,7 +54,8 @@ frontend/
 │   ├── ui.ts                     # Sidebar, scanner UI state
 │   ├── session.ts                # Current user session / auth
 │   ├── sections.ts               # Teacher sections with students + attendance
-│   └── attendance.ts             # Live attendance marking (time-in/time-out)
+│   ├── attendance.ts             # Live attendance marking (time-in/time-out)
+│   └── subscription.ts           # Plan status, create invoices, cancel
 ├── hooks/
 │   ├── .gitkeep
 │   ├── use-qr-scanner.ts         # @zxing/browser wrapper
@@ -81,6 +83,7 @@ frontend/
 └── lib/
     ├── .gitkeep
     ├── api.ts                    # Fetch wrapper (credentials: "include", /api/v1 prefix)
+    ├── auth-client.ts            # better-auth client (createAuthClient)
     └── utils.ts                  # cn() utility (clsx + tailwind-merge)
 ```
 
@@ -159,7 +162,9 @@ frontend/
 | `/attendance`                        | Yes  | teacher | Attendance marking page (QR scanner + manual) |
 | `/parent/join`                       | Yes  | parent  | Join a section via class code                 |
 | `/parent/board`                      | Yes  | parent  | View linked children / link new students      |
-| `/subscription`                      | Yes  | teacher | Plan management & billing                     |
+| `/subscription`                      | Yes  | teacher | Plan selection / current plan management      |
+| `/payment/success`                   | Yes  | teacher | PayMongo return — payment confirmed           |
+| `/payment/failed`                    | Yes  | teacher | PayMongo return — payment failed / cancelled  |
 | `/settings`                          | Yes  | any     | Profile / account settings                    |
 
 ### Route Groups (planned)
@@ -184,6 +189,9 @@ app/
 │   │   ├── join/page.tsx
 │   │   └── board/page.tsx
 │   ├── subscription/page.tsx
+│   ├── payment/
+│   │   ├── success/page.tsx
+│   │   └── failed/page.tsx
 │   └── settings/page.tsx
 ├── layout.tsx                   # Root layout (fonts, theme)
 ├── page.tsx                     # Landing page (public)
@@ -252,12 +260,13 @@ Zustand stores in `stores/` are the single source of truth for **all client stat
 
 ### Stores
 
-| Store          | File                   | State / Actions                                                     | Sync          |
-| -------------- | ---------------------- | ------------------------------------------------------------------- | ------------- |
-| `ui`           | `stores/ui.ts`         | `sidebarOpen`, `scannerOpen`, `lastScannedStudentId`                | —             |
-| `session`      | `stores/session.ts`    | `session`, `fetch()`, `signIn()`, `signUp()`, `signOut()`          | On action     |
-| `sections`     | `stores/sections.ts`   | `sections[]`, `fetch(date?)`                                        | Polling       |
-| `attendance`   | `stores/attendance.ts` | `marked[]`, `timeIn(id)`, `timeOut(id)`                             | On mutation   |
+| Store          | File                     | State / Actions                                                   | Backend Driver |
+| -------------- | ------------------------ | ----------------------------------------------------------------- | -------------- |
+| `ui`           | `stores/ui.ts`           | `sidebarOpen`, `scannerOpen`, `lastScannedStudentId`              | —              |
+| `session`      | `stores/session.ts`      | `session`, `fetch()`, `signIn()`, `signUp()`, `signOut()`         | `authClient`   |
+| `sections`     | `stores/sections.ts`     | `sections[]`, `fetch(date?)`                                      | `lib/api.ts`   |
+| `attendance`   | `stores/attendance.ts`   | `marked[]`, `timeIn(id)`, `timeOut(id)`                           | `lib/api.ts`   |
+| `subscription` | `stores/subscription.ts` | `status`, `loading`, `fetch()`, `createInvoice(plan)`, `cancel()` | `lib/api.ts`   |
 
 ### Data Flow
 
@@ -291,7 +300,9 @@ function SectionList() {
   // Auto-refresh every 30 seconds for "always latest" data
   usePolling(fetch, 30_000)
 
-  useEffect(() => { fetch() }, [fetch])
+  useEffect(() => {
+    fetch()
+  }, [fetch])
   // ...
 }
 ```
@@ -307,25 +318,136 @@ usePolling(() => useSectionsStore.getState().fetch(), 15_000)
 ### Notes
 
 - **Reads** always go through stores. Components never call `lib/api.ts` directly.
-- **Mutations** (create, update, delete) use server actions in `actions/`, then call the store's `fetch()` to refresh.
-- **Server actions** remain for SSR data fetching and mutations needing server-side validation.
+- **Mutations** (create, update, delete) call the store's action method (e.g., `useAttendanceStore.getState().timeIn(id)`), then the store calls `lib/api.ts` and updates state.
+- **Server actions** in `actions/` are for SSR data fetching and mutations needing server-side validation.
 
 ---
 
 ## Authentication Flow
 
-### Session-Based Auth via better-auth
+### better-auth Client (`lib/auth-client.ts`)
 
-1. **Sign-up / Sign-in**: User submits form → server action `auth.signUp()` or `auth.signIn()` → backend sets an HTTP-only session cookie.
-2. **Subsequent requests**: The cookie is automatically forwarded by `credentials: "include"` in every `lib/api.ts` call.
-3. **Session check**: Server components / layouts call `auth.getSession()` to check auth state. If no session, redirect to sign-in.
-4. **Sign-out**: `auth.signOut()` → backend clears the session cookie.
+The frontend uses `createAuthClient` from `better-auth/react` to handle auth. It is initialized once in `lib/auth-client.ts`:
+
+```typescript
+export const authClient = createAuthClient({
+  baseURL: "http://localhost:8080",
+  basePath: "/auth",
+})
+```
+
+The client:
+
+- Manages session cookie forwarding automatically.
+- Provides typed API methods: `authClient.signIn.email()`, `authClient.signUp.email()`, `authClient.signOut()`, `authClient.getSession()`.
+- Exposes `authClient.useSession()` React hook for reactive session state in components.
+
+### Session Flow
+
+1. **App load**: Root layout or session provider calls `useSessionStore.fetch()` (or `authClient.getSession()`) to check for an existing session.
+2. **Sign-up / Sign-in**: Form calls `useSessionStore.signIn()` / `signUp()` → these call `authClient.signIn.email()` → backend sets HTTP-only session cookie → store calls `getSession()` to hydrate state.
+3. **Subsequent requests**: The cookie is automatically forwarded by both `authClient.$fetch` and raw `fetch` with `credentials: "include"`.
+4. **Sign-out**: `authClient.signOut()` → backend clears the session cookie → store clears.
+5. **Reactivity**: The `authClient.useSession()` React hook re-renders components on session changes (using nanostores under the hood).
+
+### Client Component Session Hook
+
+```tsx
+"use client"
+import { authClient } from "@/lib/auth-client"
+
+function UserBadge() {
+  const { data: session, isPending } = authClient.useSession()
+  if (isPending) return <Skeleton />
+  return <span>{session?.user.name}</span>
+}
+```
+
+### Store-Based Session Access
+
+For non-hook scenarios (e.g., inside callbacks, server actions, or when polling is needed), the zustand `useSessionStore` syncs with the better-auth client:
+
+```tsx
+import { useSessionStore } from "@/stores/session"
+
+const session = useSessionStore((s) => s.session)
+const signOut = useSessionStore((s) => s.signOut)
+```
 
 ### Auth Guards
 
 - **Public routes** (`/`, `/auth/*`): accessible without session.
 - **Protected routes** (`/dashboard`, `/sections/*`, `/attendance`, `/parent/*`, `/subscription`, `/settings`): parent layout checks session, redirects to sign-in if unauthenticated.
 - **Role-based access**: Dashboard/sections/attendance pages additionally verify `user.role.includes("teacher")`. Parent pages verify `user.role.includes("parent")`.
+
+---
+
+## Subscription / Payment Flow
+
+### Plan Guard (Dashboard Layout)
+
+The `(dashboard)/layout.tsx` acts as a **plan guard** for teacher routes. On every navigation to any teacher page, the layout runs before rendering children:
+
+```
+Request → (dashboard)/layout.tsx
+  ├── getSession()
+  ├── session.user.role.includes("teacher") AND session.user.plan === "free"?
+  │     └── YES → redirect("/subscription")
+  └── NO  → render <Outlet /> (normal dashboard)
+```
+
+This prevents teachers with expired/cancelled/free plans from accessing any dashboard functionality (sections, students, attendance). Parents bypass the guard entirely.
+
+### Payment Flow
+
+```
+Teacher on /subscription
+  │
+  ├── Selects plan (Essential ₱200/mo or Premium ₱350/mo)
+  │
+  ├── subscription.createInvoice("essential")
+  │     → POST /api/v1/subscription/create-invoice { plan }
+  │     → returns { checkoutUrl, linkId }
+  │
+  ├── window.location.href = checkoutUrl
+  │     → PayMongo hosted checkout
+  │
+  │   ┌── User pays successfully ──┐
+  │   │                            │
+  │   ▼                            ▼
+  │   /payment/success            /payment/failed
+  │   │                            │
+  │   ├── Polls subscription       ├── "Payment failed"
+  │   │   status every 3s          ├── "Try again" button
+  │   │                            │   → links back to
+  │   ├── Once plan ≠ free:        │     /subscription
+  │   │   redirect /dashboard      │
+  │   │                            │
+  │   └── Webhook activates plan   │
+  │       (async, backend)         │
+  │                                │
+  └────────────────────────────────┘
+```
+
+### Subscription Store (`stores/subscription.ts`)
+
+| Method / State        | Description                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| `status`              | `SubscriptionStatus \| null` — plan, status, periods                                   |
+| `loading`             | Boolean                                                                                |
+| `error`               | String \| null                                                                         |
+| `fetch()`             | GET `/api/v1/subscription/status` — hydrates store                                     |
+| `createInvoice(plan)` | POST `/api/v1/subscription/create-invoice` → returns `{ checkoutUrl }`, redirects user |
+| `cancel()`            | POST `/api/v1/subscription/cancel` — cancels plan                                      |
+| `clearError()`        | Resets error                                                                           |
+
+### Redirect Handling (`/payment/success`)
+
+After PayMongo redirects the user back:
+
+1. Polls `/api/v1/subscription/status` every 3 seconds.
+2. Once `status.plan !== "free"`: redirect to `/dashboard`.
+3. Backend webhook (`POST /api/v1/subscription/webhook`) processes the payment asynchronously — the frontend polls until the webhook has updated the plan.
 
 ---
 

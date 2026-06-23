@@ -1,28 +1,16 @@
 import { create } from "zustand"
-import { get, post } from "@/lib/api"
-
-interface User {
-  id: number
-  name: string
-  email: string
-  role: string[]
-  plan: string
-}
-
-interface Session {
-  user: User
-  session: { token: string; expiresAt: string }
-}
+import { authClient } from "@/lib/auth-client"
+import type { SessionData } from "@/lib/auth-client"
 
 interface SessionStore {
-  session: Session | null
+  session: SessionData | null
   loading: boolean
   error: string | null
   fetch: () => Promise<void>
   signIn: (body: { email: string; password: string }) => Promise<void>
   signUp: (body: { name: string; email: string; password: string; role?: string[] }) => Promise<void>
   signOut: () => Promise<void>
-  setSession: (session: Session) => void
+  setSession: (session: SessionData) => void
   clear: () => void
 }
 
@@ -33,46 +21,40 @@ export const useSessionStore = create<SessionStore>((set) => ({
 
   fetch: async () => {
     set({ loading: true, error: null })
-    try {
-      const session = await get<Session>("/auth/session")
-      set({ session, loading: false })
-    } catch {
+    const { data, error } = await authClient.getSession()
+    if (error) {
       set({ session: null, loading: false })
+    } else {
+      set({ session: data as SessionData, loading: false })
     }
   },
 
-  signIn: async (body) => {
+  async signIn(body) {
     set({ loading: true, error: null })
-    try {
-      await post("/auth/sign-in", body)
-      const session = await get<Session>("/auth/session")
-      set({ session, loading: false })
-    } catch (e) {
-      set({
-        loading: false,
-        error: e instanceof Error ? e.message : "Sign in failed",
-      })
-      throw e
+    const { error } = await authClient.signIn.email(body)
+    if (error) {
+      const message = error.message ?? "Sign in failed"
+      set({ loading: false, error: message })
+      return
     }
+    const { data } = await authClient.getSession()
+    set({ session: data as SessionData, loading: false })
   },
 
-  signUp: async (body) => {
+  async signUp(body) {
     set({ loading: true, error: null })
-    try {
-      await post("/auth/sign-up", body)
-      const session = await get<Session>("/auth/session")
-      set({ session, loading: false })
-    } catch (e) {
-      set({
-        loading: false,
-        error: e instanceof Error ? e.message : "Sign up failed",
-      })
-      throw e
+    const { error } = await authClient.signUp.email(body)
+    if (error) {
+      const message = error.message ?? "Sign up failed"
+      set({ loading: false, error: message })
+      return
     }
+    const { data } = await authClient.getSession()
+    set({ session: data as SessionData, loading: false })
   },
 
   signOut: async () => {
-    await post("/auth/sign-out")
+    await authClient.signOut()
     set({ session: null, error: null })
   },
 
