@@ -99,6 +99,7 @@ export default function Page() {
             <MiniCal />
           </div>
           <div className="grid gap-4 md:grid-cols-3">
+            <ChartPieDonutText />
             <CardSection
               label={cardDatas.totalStudents.label}
               title={cardDatas.totalStudents.totalCount}
@@ -125,7 +126,6 @@ export default function Page() {
               desc={cardDatas.totalAbsent.desc}
               footer={cardDatas.totalAbsent.footer}
             />
-            <ChartPieDonutText />
           </div>
           <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
@@ -150,12 +150,14 @@ const CardSection = ({
   footer: string
 }) => {
   return (
-    <Card className="@container/card border-muted-foreground">
+    <Card className="@container/card justify-between border-muted-foreground">
       <CardHeader>
         <CardDescription>{label}</CardDescription>
-        <CardTitle className="flex items-center justify-center gap-2 text-2xl font-semibold text-primary tabular-nums @[250px]/card:text-4xl">
-          {icon}
-          {title}
+        <CardTitle className="grid grid-cols-1 items-center justify-center gap-2 py-12 text-center text-2xl font-semibold text-primary tabular-nums outline-2 @[250px]/card:text-4xl">
+          <span className="flex items-center justify-center gap-2 self-center">
+            {icon}
+            {title}
+          </span>
         </CardTitle>
         <CardAction className="text-muted-foreground">{labelIcon}</CardAction>
       </CardHeader>
