@@ -1,5 +1,3 @@
-import { env } from "@/env"
-
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -11,7 +9,7 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const url = `${env.NEXT_PUBLIC_API_URL}/api/v1${path}`
+  const url = `/api/v1${path}`
   const res = await fetch(url, {
     credentials: "include",
     headers: { "Content-Type": "application/json", ...options?.headers },

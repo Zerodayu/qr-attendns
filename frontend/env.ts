@@ -1,11 +1,16 @@
 import { z } from "zod"
 
 const envSchema = z.object({
-  NEXT_PUBLIC_API_URL: z.string().min(1),
+  API_URL: z.url().min(1),
+  NEXT_PUBLIC_API_URL: z.url().min(1),
   NEXT_PUBLIC_VAPID_KEY: z.string().min(1).optional(),
 })
 
-export const env = envSchema.parse({
+const parsed = envSchema.parse({
+  API_URL: process.env.API_URL,
   NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   NEXT_PUBLIC_VAPID_KEY: process.env.NEXT_PUBLIC_VAPID_KEY,
 })
+
+export const env = parsed
+export const API_URL = parsed.API_URL
