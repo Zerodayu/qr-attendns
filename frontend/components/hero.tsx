@@ -1,114 +1,48 @@
-import { ArrowUpRight, CirclePlay } from "lucide-react";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import GradientText from "./gradient-text";
-import Navbar from "./navbar";
+import { ArrowUpRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Logo01, Logo02, Logo03, Logo04 } from "./logos"
+import Navbar from "./navbar"
 
-export default function Hero() {
+const Hero = () => {
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center px-6 pt-8 pb-16">
+    <div>
       <Navbar />
 
-      <div className="mt-16 max-w-3xl text-center">
-        <Badge
-          className="rounded-full border-border py-1"
-          render={<Link href="#" />}
-          variant="secondary"
-        >
-          Just released v1.0.0 <ArrowUpRight className="ml-1 size-4" />
-        </Badge>
-        <h1 className="mx-auto mt-6 max-w-xl font-medium text-4xl tracking-[-0.045em] sm:text-[2.75rem] md:text-6xl/[1.2]">
-          Ship{" "}
-          <GradientText
-            animationSpeed={2}
-            className="border-b-2 border-dotted sm:border-b-3"
-            colors={[
-              "var(--color-purple-500)",
-              "var(--color-indigo-400)",
-              "var(--color-sky-500)",
-            ]}
-            direction="diagonal"
-          >
-            better UI
-          </GradientText>{" "}
-          without&nbsp;the&nbsp;hassle
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-muted-foreground text-xl tracking-[-0.01em] md:text-2xl/normal">
-          Instead of starting from scratch every time, use thoughtfully designed
-          blocks that give you a solid foundation for any UI.
+      <div className="mx-auto flex h-screen max-w-5xl flex-col items-center justify-center px-6 py-12 text-center">
+        <h2 className="text-4xl leading-[1.4] font-medium tracking-tighter text-balance sm:text-5xl md:text-6xl lg:text-7xl">
+          Beautifully Designed{" "}
+          <span className="inline-block rounded-md bg-primary px-1.5 py-0.5 leading-[1.1] tracking-tight text-primary-foreground sm:rounded-lg sm:px-3.5">
+            Premium
+          </span>{" "}
+          Shadcn Blocks
+        </h2>
+        <p className="mt-6 text-center text-xl tracking-[-0.01em] text-balance text-muted-foreground sm:text-2xl sm:leading-normal md:text-3xl">
+          A collection of beautifully designed components that you can use to
+          build your next project.
         </p>
-        <div className="mt-10 flex items-center justify-center gap-4">
-          <Button className="rounded-full" size="lg">
-            Get Started <ArrowUpRight className="h-5! w-5!" />
+        <div className="mx-auto mt-10 flex w-full max-w-xs flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button className="w-full sm:w-auto" size="lg">
+            Register as Teacher <ArrowUpRight />
           </Button>
-          <Button
-            className="rounded-full shadow-none"
-            size="lg"
-            variant="outline"
-          >
-            <CirclePlay className="h-5! w-5!" /> Watch Demo
+          <Button className="w-full sm:w-auto" size="lg" variant="outline">
+            Login as Parent
           </Button>
         </div>
-      </div>
-      <div className="relative mx-auto mt-20 aspect-video w-full max-w-(--breakpoint-xl) rounded-xl bg-linear-to-br from-indigo-400/90 via-indigo-300 to-sky-400/80 p-2">
-        <div className="size-full rounded-lg bg-background" />
-        <div
-          className="absolute inset-0 isolate z-0"
-          style={{
-            backgroundImage: `
-        linear-gradient(to right, var(--border) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--border) 1px, transparent 1px)
-      `,
-            backgroundSize: "20px 20px",
-            backgroundPosition: "0 0, 0 0",
-            maskImage: `
-       repeating-linear-gradient(
-              to right,
-              black 0px,
-              black 3px,
-              transparent 3px,
-              transparent 8px
-            ),
-            repeating-linear-gradient(
-              to bottom,
-              black 0px,
-              black 3px,
-              transparent 3px,
-              transparent 8px
-            ),
-          radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%)
-      `,
-            WebkitMaskImage: `
- repeating-linear-gradient(
-              to right,
-              black 0px,
-              black 3px,
-              transparent 3px,
-              transparent 8px
-            ),
-            repeating-linear-gradient(
-              to bottom,
-              black 0px,
-              black 3px,
-              transparent 3px,
-              transparent 8px
-            ),
-          radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%)
-      `,
-            maskComposite: "intersect",
-            WebkitMaskComposite: "source-in",
-          }}
-        />
-      </div>
 
-      <div
-        className="fixed inset-0 isolate -z-1 h-screen [--color-hero-bg:var(--color-indigo-600)] dark:[--color-hero-bg:var(--color-indigo-500)]"
-        style={{
-          background:
-            "radial-gradient(125% 125% at 50% 10%, var(--color-background) 40%, var(--color-hero-bg) 100%)",
-        }}
-      />
+        <div className="mt-24 flex flex-col items-center gap-4">
+          <p className="text-sm font-medium text-muted-foreground uppercase">
+            Trusted by engineers at
+          </p>
+          <div className="mx-auto mt-4 grid max-w-5xl grid-cols-2 place-items-center gap-6 text-foreground/70 sm:grid-cols-3 sm:gap-x-10 sm:gap-y-12 md:grid-cols-4">
+            <Logo01 className="h-7 sm:h-8" />
+            <Logo02 className="h-7 sm:h-8" />
+            <Logo03 className="h-7 sm:h-8" />
+            <Logo04 className="h-7 sm:h-8" />
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
+
+export default Hero
