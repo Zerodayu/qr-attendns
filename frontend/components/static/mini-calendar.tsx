@@ -206,7 +206,7 @@ export const MiniCalendarDay = ({
     <Button
       className={cn(
         "h-auto min-w-12 flex-col gap-0 p-2 text-xs",
-        isTodayDate && "bg-primary",
+        isTodayDate && !isSelected && "bg-primary",
         className
       )}
       onClick={() => onDateSelect(date)}

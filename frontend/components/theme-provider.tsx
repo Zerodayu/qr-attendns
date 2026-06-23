@@ -1,71 +1,157 @@
 "use client"
 
-import * as React from "react"
-import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
+import type { ReactNode } from "react"
 
-function ThemeProvider({
-  children,
-  ...props
-}: React.ComponentProps<typeof NextThemesProvider>) {
-  return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-      {...props}
-    >
-      <ThemeHotkey />
-      {children}
-    </NextThemesProvider>
-  )
+type Theme = "light" | "dark" | "system"
+type ResolvedTheme = "light" | "dark"
+
+type ThemeContextType = {
+  theme: Theme
+  resolvedTheme: ResolvedTheme
+  setTheme: (theme: Theme) => void
 }
 
-function isTypingTarget(target: EventTarget | null) {
-  if (!(target instanceof HTMLElement)) {
-    return false
-  }
+const ThemeContext = createContext<ThemeContextType | null>(null)
 
-  return (
-    target.isContentEditable ||
-    target.tagName === "INPUT" ||
-    target.tagName === "TEXTAREA" ||
-    target.tagName === "SELECT"
-  )
+export function useTheme() {
+  const context = useContext(ThemeContext)
+  if (!context) throw new Error("useTheme must be used within ThemeProvider")
+  return context
 }
 
-function ThemeHotkey() {
-  const { resolvedTheme, setTheme } = useTheme()
+function getSystemTheme(): ResolvedTheme {
+  if (typeof window === "undefined") return "dark"
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light"
+}
 
-  React.useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.defaultPrevented || event.repeat) {
-        return
-      }
-
-      if (event.metaKey || event.ctrlKey || event.altKey) {
-        return
-      }
-
-      if (event.key.toLowerCase() !== "d") {
-        return
-      }
-
-      if (isTypingTarget(event.target)) {
-        return
-      }
-
-      setTheme(resolvedTheme === "dark" ? "light" : "dark")
+function getStoredTheme(storageKey: string): Theme | null {
+  try {
+    const stored = localStorage.getItem(storageKey)
+    if (stored === "light" || stored === "dark" || stored === "system") {
+      return stored
     }
-
-    window.addEventListener("keydown", onKeyDown)
-
-    return () => {
-      window.removeEventListener("keydown", onKeyDown)
-    }
-  }, [resolvedTheme, setTheme])
-
+  } catch {}
   return null
 }
 
-export { ThemeProvider }
+function disableTransitions() {
+  const style = document.createElement("style")
+  style.textContent =
+    "*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}"
+  document.head.appendChild(style)
+  return () => {
+    window.getComputedStyle(document.body)
+    setTimeout(() => document.head.removeChild(style), 1)
+  }
+}
+
+function applyTheme(
+  theme: ResolvedTheme,
+  attribute: string | string[],
+  enableColorScheme: boolean
+) {
+  const root = document.documentElement
+  if (attribute === "class") {
+    root.classList.remove("light", "dark")
+    root.classList.add(theme)
+  } else if (typeof attribute === "string") {
+    root.setAttribute(attribute, theme)
+  } else {
+    attribute.forEach((a) => {
+      if (a === "class") {
+        root.classList.remove("light", "dark")
+        root.classList.add(theme)
+      } else {
+        root.setAttribute(a, theme)
+      }
+    })
+  }
+  if (enableColorScheme) {
+    root.style.colorScheme = theme
+  }
+}
+
+type ThemeProviderProps = {
+  children: ReactNode
+  storageKey?: string
+  defaultTheme?: Theme
+  attribute?: string | string[]
+  enableSystem?: boolean
+  enableColorScheme?: boolean
+  disableTransitionOnChange?: boolean
+  themes?: string[]
+}
+
+export function ThemeProvider({
+  children,
+  storageKey = "theme",
+  defaultTheme = "system",
+  attribute = "class",
+  enableSystem = true,
+  enableColorScheme = true,
+  disableTransitionOnChange = false,
+  themes = ["light", "dark"],
+}: ThemeProviderProps) {
+  const [theme, setThemeState] = useState<Theme>(() => {
+    return getStoredTheme(storageKey) || defaultTheme
+  })
+
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
+    return theme === "system" ? getSystemTheme() : theme
+  })
+
+  const mql =
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-color-scheme: dark)")
+      : null
+
+  useEffect(() => {
+    const handler = () => {
+      if (theme === "system") {
+        const resolved = getSystemTheme()
+        setResolvedTheme(resolved)
+        applyTheme(resolved, attribute, enableColorScheme)
+      }
+    }
+    mql?.addEventListener("change", handler)
+    return () => mql?.removeEventListener("change", handler)
+  }, [theme, attribute, mql, enableColorScheme])
+
+  useEffect(() => {
+    const cleanupTransitions =
+      disableTransitionOnChange ? disableTransitions() : undefined
+    const resolved = theme === "system" ? getSystemTheme() : theme
+    setResolvedTheme(resolved)
+    applyTheme(resolved, attribute, enableColorScheme)
+    return cleanupTransitions
+  }, [theme, attribute, enableColorScheme, disableTransitionOnChange])
+
+  const setTheme = useCallback(
+    (newTheme: Theme) => {
+      setThemeState(newTheme)
+      try {
+        localStorage.setItem(storageKey, newTheme)
+      } catch {}
+    },
+    [storageKey]
+  )
+
+  const value = useMemo(
+    () => ({ theme, resolvedTheme, setTheme }),
+    [theme, resolvedTheme, setTheme]
+  )
+
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  )
+}

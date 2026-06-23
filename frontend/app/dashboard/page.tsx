@@ -1,6 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import MiniCal from "@/components/mini-cal"
-// import MiniCalendar from "@/components/mini-calendar"
+import { ChartPieDonutText } from "@/components/pie-chart"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,14 +9,65 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import {
+  BadgeInfo,
+  ThumbsDown,
+  ThumbsUp,
+  UserCheck,
+  UsersRound,
+  UserX,
+} from "lucide-react"
 
 export default function Page() {
+  const cardDatas = {
+    totalStudents: {
+      label: "Total Students",
+      totalCount: 26,
+      icon: "icon",
+      desc: "Total Students for {section}",
+      footer: "niceeee",
+    },
+
+    totalPresent: {
+      label: "Present Today",
+      totalCount: 24,
+      icon: ":)",
+      desc: "Total Present for todays attendance",
+      footer: "niceeee",
+    },
+
+    totalAbsent: {
+      label: "Any Absents?",
+      totalCount: 2,
+      icon: ":(",
+      desc: "Why is there abesents today?",
+      footer: "niceeee",
+    },
+
+    genders: {
+      label: "Total Students",
+      totalCount: 26,
+      male: 16,
+      female: 10,
+      icon: "icon",
+      desc: "Total Students for {section}",
+      footer: "niceeee",
+    },
+  }
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -43,17 +94,75 @@ export default function Page() {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="flex w-full flex-1 flex-col gap-4 p-4 pt-0">
           <div className="flex w-full items-center justify-center">
             <MiniCal />
           </div>
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            {/* <div className="aspect-video rounded-xl bg-muted/50" /> */}
-            {/* <div className="aspect-video rounded-xl bg-muted/50" /> */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <CardSection
+              label={cardDatas.totalStudents.label}
+              title={cardDatas.totalStudents.totalCount}
+              labelIcon={<BadgeInfo />}
+              icon={<UsersRound />}
+              desc={cardDatas.totalStudents.desc}
+              footer={cardDatas.totalStudents.footer}
+            />
+
+            <CardSection
+              label={cardDatas.totalPresent.label}
+              title={cardDatas.totalPresent.totalCount}
+              labelIcon={<ThumbsUp />}
+              icon={<UserCheck />}
+              desc={cardDatas.totalPresent.desc}
+              footer={cardDatas.totalPresent.footer}
+            />
+
+            <CardSection
+              label={cardDatas.totalAbsent.label}
+              title={cardDatas.totalAbsent.totalCount}
+              labelIcon={<ThumbsDown />}
+              icon={<UserX />}
+              desc={cardDatas.totalAbsent.desc}
+              footer={cardDatas.totalAbsent.footer}
+            />
+            <ChartPieDonutText />
           </div>
           <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
       </SidebarInset>
     </SidebarProvider>
+  )
+}
+
+const CardSection = ({
+  label,
+  title,
+  labelIcon,
+  icon,
+  desc,
+  footer,
+}: {
+  label: string
+  title: number
+  labelIcon: React.ReactNode
+  icon: React.ReactNode
+  desc: string
+  footer: string
+}) => {
+  return (
+    <Card className="@container/card border-muted-foreground">
+      <CardHeader>
+        <CardDescription>{label}</CardDescription>
+        <CardTitle className="flex items-center justify-center gap-2 text-2xl font-semibold text-primary tabular-nums @[250px]/card:text-4xl">
+          {icon}
+          {title}
+        </CardTitle>
+        <CardAction className="text-muted-foreground">{labelIcon}</CardAction>
+      </CardHeader>
+      <CardFooter className="flex-col items-start gap-1.5 text-sm">
+        <div className="line-clamp-1 flex gap-2 font-medium">{desc}</div>
+        <div className="text-muted-foreground">{footer}</div>
+      </CardFooter>
+    </Card>
   )
 }
