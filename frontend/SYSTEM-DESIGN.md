@@ -35,6 +35,7 @@ The frontend is a Next.js 16 application using the App Router, styled with shadc
 frontend/
 ├── AGENTS.md                     # Agent conventions
 ├── SYSTEM-DESIGN.md              # This file
+├── middleware.ts                  # Proxy /api/* and /auth/* to backend
 ├── env.ts                        # Zod-validated environment variables
 ├── components.json               # shadcn/ui configuration
 ├── next.config.ts                # Next.js config (env defaults)
@@ -172,11 +173,11 @@ frontend/
 ```
 app/
 ├── (auth)/
-│   ├── sign-in/page.tsx
+│   ├── sign-in/page.tsx        # Login form (Login component)
 │   ├── sign-up/page.tsx
 │   └── forgot-password/page.tsx
 ├── (dashboard)/
-│   ├── layout.tsx              # Authenticated layout (sidebar, navbar)
+│   ├── layout.tsx              # Authenticated layout + plan guard
 │   ├── page.tsx                # Redirect to /dashboard
 │   ├── dashboard/page.tsx
 │   ├── sections/
@@ -229,6 +230,31 @@ export default async function DashboardPage() {
 ### `createDataStore` factory (`stores/data.ts`)
 
 A generic helper to create async data stores with `loading`, `error`, `lastFetched`, `fetch`, and `setData`. Used internally by domain stores.
+
+---
+
+## Middleware / Proxy (`middleware.ts`)
+
+Next.js middleware intercepts all requests to `/api/*` and `/auth/*` and rewrites them to the backend server:
+
+```typescript
+// middleware.ts — runs on every matching request
+export function middleware(request: NextRequest) {
+  const target = process.env.API_URL ?? "http://localhost:8080"
+  // Rewrite /api/v1/* → http://localhost:8080/api/v1/*
+  // Rewrite /auth/*     → http://localhost:8080/auth/*
+  const url = new URL(request.nextUrl.pathname + request.nextUrl.search, target)
+  return NextResponse.rewrite(url)
+}
+```
+
+This means:
+- **No CORS needed** — all requests are same-origin from the browser's perspective.
+- **No base URL in client code** — `lib/api.ts` uses relative paths like `/api/v1/sections`.
+- **Auth cookies** flow automatically (same domain, no cross-origin issues).
+- **In production**, set `API_URL` to the production backend URL.
+
+The middleware only matches `/api/:path*` and `/auth/:path*` via the `config.matcher`.
 
 ---
 
@@ -530,10 +556,11 @@ Located in `components/ui/`:
 
 All env vars are validated at startup via `env.ts` using Zod. Import `env` from `@/env` — never access `process.env` directly.
 
-| Variable                | Default                 | Description               |
-| ----------------------- | ----------------------- | ------------------------- |
-| `NEXT_PUBLIC_API_URL`   | `http://localhost:8080` | Backend API base URL      |
-| `NEXT_PUBLIC_VAPID_KEY` | —                       | Web Push VAPID public key |
+| Variable                | Default                 | Description                                |
+| ----------------------- | ----------------------- | ------------------------------------------ |
+| `API_URL`               | `http://localhost:8080` | Backend URL (used by middleware as proxy target) |
+| `NEXT_PUBLIC_API_URL`   | `http://localhost:8080` | Backend API base URL (fallback for direct calls) |
+| `NEXT_PUBLIC_VAPID_KEY` | —                       | Web Push VAPID public key                  |
 
 ---
 
