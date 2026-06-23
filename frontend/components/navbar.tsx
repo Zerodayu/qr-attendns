@@ -1,11 +1,12 @@
-import { ArrowUpRight, Menu, Wheat, X } from "lucide-react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { ArrowUpRight, Menu, X } from "lucide-react"
+import Link from "next/link"
+import { Logo } from "./logo"
 import { NavMenu } from "./nav-menu"
 
 const links = [
@@ -16,10 +17,9 @@ const links = [
 ]
 
 const buttons = {
-  primary: "Get Started",
-  secondary: "Login",
+  primary: { label: "Register Now", link: "/sign-up" },
+  secondary: { label: "Login", link: "/sign-in" },
 }
-
 const Navbar = () => {
   return (
     <div className="fixed top-0 h-16 w-full border-b bg-background px-6">
@@ -27,8 +27,8 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {/* Logo */}
           <Link className="flex items-center gap-3" href="/">
-            <Wheat />
-            <span className="text-xl font-bold">Bloxxee</span>
+            <Logo padding="6" />
+            <span className="text-xl font-bold">Fourfold</span>
           </Link>
         </div>
 
@@ -39,13 +39,17 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Button>
-              {buttons.primary}
-              <ArrowUpRight />
-            </Button>
-            <Button className="hidden sm:inline-flex" variant="secondary">
-              {buttons.secondary}
-            </Button>
+            <Link href="/sign-up">
+              <Button>
+                {buttons.primary.label}
+                <ArrowUpRight />
+              </Button>
+            </Link>
+            <Link href="/sign-in">
+              <Button className="hidden sm:inline-flex" variant="secondary">
+                {buttons.secondary.label}
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile navigation menu */}

@@ -73,7 +73,7 @@ const Signup = () => {
 
           <Logo />
           <p className="mt-4 text-xl font-medium">
-            Create an Account to QR Attendnz
+            Create an Account to Fourfold
           </p>
 
           {error && (

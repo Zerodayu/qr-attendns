@@ -63,7 +63,7 @@ const Login = () => {
           <div className="absolute inset-y-0 -right-1 h-[calc(100%+3rem)] -translate-y-6 border-e max-sm:hidden" />
 
           <Logo />
-          <p className="mt-4 text-xl font-medium">Log in to QR Attendnz</p>
+          <p className="mt-4 text-xl font-medium">Log in to Fourfold</p>
 
           <div className="flex w-full flex-col gap-4 pt-8">
             <Button className="w-full gap-3" disabled={pending}>
