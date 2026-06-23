@@ -16,6 +16,7 @@ import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 import { SelectDropdown } from "./select-dropdown"
+import { project } from "@/utils/project"
 
 const formSchema = z.object({
   email: z.email(),
@@ -73,7 +74,7 @@ const Signup = () => {
 
           <Logo />
           <p className="mt-4 text-xl font-medium">
-            Create an Account to Fourfold
+            Create an Account to {project.name}
           </p>
 
           {error && (

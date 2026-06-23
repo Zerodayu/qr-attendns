@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import { Geist_Mono, Outfit } from "next/font/google"
 
-import "./globals.css"
+import { DevEnv } from "@/components/static/dev-banner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import { DevEnv } from "@/components/static/dev-banner"
+import "./globals.css"
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
@@ -13,7 +13,7 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Fourfold",
+  title: "Oxalis",
 }
 
 export default function RootLayout({

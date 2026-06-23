@@ -8,6 +8,7 @@ import { ArrowUpRight, Menu, X } from "lucide-react"
 import Link from "next/link"
 import { Logo } from "@/components/static/logo"
 import { NavMenu } from "./nav-menu"
+import { project } from "@/utils/project"
 
 const links = [
   { href: "/", label: "Home" },
@@ -28,7 +29,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link className="flex items-center gap-3" href="/">
             <Logo padding="6" />
-            <span className="text-xl font-bold">Fourfold</span>
+            <span className="text-xl font-bold">{project.name}</span>
           </Link>
         </div>
 
