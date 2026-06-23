@@ -3,7 +3,7 @@ import { Geist_Mono, Outfit } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-
+import { DevEnv } from "@/components/dev-banner"
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
@@ -28,7 +28,9 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <DevEnv>{children}</DevEnv>
+        </ThemeProvider>
       </body>
     </html>
   )
