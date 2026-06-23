@@ -1,21 +1,21 @@
 "use client"
 
-import { Logo } from "@/components/logo"
+import { Logo } from "@/components/static/logo"
+import { FacebookLogo, GoogleLogo } from "@/components/static/logos"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { useSessionStore } from "@/stores/session"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Undo2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
-import { FacebookLogo, GoogleLogo } from "./logos"
 import { SelectDropdown } from "./select-dropdown"
-import { Undo2 } from "lucide-react"
 
 const formSchema = z.object({
   email: z.email(),

@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/popover"
 import { ArrowUpRight, Menu, X } from "lucide-react"
 import Link from "next/link"
-import { Logo } from "./logo"
+import { Logo } from "@/components/static/logo"
 import { NavMenu } from "./nav-menu"
 
 const links = [

@@ -10,10 +10,10 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Logo } from "@/components/logo"
+import { Logo } from "@/components/static/logo"
 import { useSessionStore } from "@/stores/session"
 import Image from "next/image"
-import { FacebookLogo, GoogleLogo } from "./logos"
+import { FacebookLogo, GoogleLogo } from "@/components/static/logos"
 import { Undo2 } from "lucide-react"
 
 const formSchema = z.object({

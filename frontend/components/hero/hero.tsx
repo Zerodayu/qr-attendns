@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Logo01, Logo02, Logo03, Logo04 } from "./logos"
+import { Logo01, Logo02, Logo03, Logo04 } from "@/components/static/logos"
 import Navbar from "./navbar"
 import Link from "next/link"
 
