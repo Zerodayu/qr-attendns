@@ -15,6 +15,11 @@ const links = [
   { href: "#about", label: "About" },
 ]
 
+const buttons = {
+  primary: "Get Started",
+  secondary: "Login",
+}
+
 const Navbar = () => {
   return (
     <div className="fixed top-0 h-16 w-full border-b bg-background px-6">
@@ -35,10 +40,11 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Button>
-              Register as Teacher <ArrowUpRight />
+              {buttons.primary}
+              <ArrowUpRight />
             </Button>
             <Button className="hidden sm:inline-flex" variant="secondary">
-              Sign In
+              {buttons.secondary}
             </Button>
           </div>
 

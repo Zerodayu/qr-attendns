@@ -14,6 +14,7 @@ import { Logo } from "@/components/logo"
 import { useSessionStore } from "@/stores/session"
 import Image from "next/image"
 import { FacebookLogo, GoogleLogo } from "./logos"
+import { Undo2 } from "lucide-react"
 
 const formSchema = z.object({
   email: z.email(),
@@ -131,10 +132,10 @@ const Login = () => {
             </Button>
           </form>
 
-          <div className="mt-5 space-y-5">
+          <div className="my-5 space-y-5">
             <Link
               className="block text-center text-sm text-muted-foreground underline"
-              href="/auth/forgot-password"
+              href="/"
             >
               Forgot your password?
             </Link>
@@ -148,6 +149,14 @@ const Login = () => {
               </Link>
             </p>
           </div>
+          <Separator />
+
+          <Link href="/" className="my-5">
+            <Button variant="link" size="sm">
+              <Undo2 />
+              Back to Homepage
+            </Button>
+          </Link>
         </div>
         <div className="relative hidden w-full max-w-3xl grow border-l bg-muted lg:block">
           <Image

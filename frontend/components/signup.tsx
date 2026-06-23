@@ -15,6 +15,7 @@ import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 import { FacebookLogo, GoogleLogo } from "./logos"
 import { SelectDropdown } from "./select-dropdown"
+import { Undo2 } from "lucide-react"
 
 const formSchema = z.object({
   email: z.email(),
@@ -146,7 +147,7 @@ const Signup = () => {
             </Button>
           </div>
 
-          <div className="mt-5 space-y-5">
+          <div className="my-5 space-y-5">
             <p className="text-center text-sm">
               Already have an account?
               <Link
@@ -157,6 +158,15 @@ const Signup = () => {
               </Link>
             </p>
           </div>
+
+          <Separator />
+
+          <Link href="/" className="my-5">
+            <Button variant="link" size="sm">
+              <Undo2 />
+              Back to Homepage
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

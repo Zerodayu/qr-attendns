@@ -2,8 +2,14 @@ import { ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Logo01, Logo02, Logo03, Logo04 } from "./logos"
 import Navbar from "./navbar"
+import Link from "next/link"
 
 const Hero = () => {
+  const buttons = {
+    primary: { label: "Create Account Now!", link: "/sign-up" },
+    secondary: { label: "Learn More", link: "/" },
+  }
+
   return (
     <div>
       <Navbar />
@@ -21,12 +27,17 @@ const Hero = () => {
           build your next project.
         </p>
         <div className="mx-auto mt-10 flex w-full max-w-xs flex-col items-center justify-center gap-4 sm:flex-row">
-          <Button className="w-full sm:w-auto" size="lg">
-            Register as Teacher <ArrowUpRight />
-          </Button>
-          <Button className="w-full sm:w-auto" size="lg" variant="outline">
-            Login as Parent
-          </Button>
+          <Link href={buttons.primary.link}>
+            <Button className="w-full sm:w-auto" size="lg">
+              {buttons.primary.label}
+              <ArrowUpRight />
+            </Button>
+          </Link>
+          <Link href={buttons.secondary.link}>
+            <Button className="w-full sm:w-auto" size="lg" variant="outline">
+              {buttons.secondary.label}
+            </Button>
+          </Link>
         </div>
 
         <div className="mt-24 flex flex-col items-center gap-4">
