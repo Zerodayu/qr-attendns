@@ -1,42 +1,34 @@
-import {
-  SparklesIcon,
-  ScanQrCode
-} from "lucide-react"
-import Link from "next/link";
-import AppToggle from "@/components/app-toggle"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { Logo } from "./logo";
+import { NavMenu } from "./nav-menu";
+import { NavigationSheet } from "./navigation-sheet";
 
-type NavbarProps = {
-  toggleValue: "off" | "on";
-  setToggleValue: (value: "off" | "on") => void;
-};
-
-export default function Navbar({ toggleValue, setToggleValue }: NavbarProps) {
+const Navbar = () => {
   return (
-    <header className="fixed w-full backdrop-blur-sm bg-black/50 top-0 z-50 border-b px-4 md:px-6">
-      <div className="flex h-16 items-center justify-between gap-4">
-        {/* Left side */}
-        <div className="flex flex-1 items-center gap-2">
-          <span className="flex items-center gap-2 font-mono font-semibold">
-            <ScanQrCode className="size-8" />
-            <h1 className="hidden sm:inline">Qr Attendns</h1>
-          </span>
-        </div>
-        {/* Middle area */}
-        <AppToggle value={toggleValue} onValueChange={setToggleValue} />
-        {/* Right side */}
-        <div className="flex flex-1 items-center justify-end gap-2">
-          <Link href="/qr-generate">
-            <Button size="sm" className="text-sm max-sm:aspect-square max-sm:p-0">
-              <SparklesIcon
-                className="opacity-60 sm:-ms-1"
-                size={16}
-              />
-              <span className="max-sm:sr-only">Generate Qr</span>
-            </Button>
-          </Link>
+    <nav className="mx-auto h-16 w-full max-w-5xl rounded-full border border-border/85 bg-background shadow-xs/3">
+      <div className="mx-auto flex h-full items-center justify-between px-4">
+        <Logo />
+
+        {/* Desktop Menu */}
+        <NavMenu className="hidden md:block" />
+
+        <div className="flex items-center gap-3">
+          <Button
+            className="hidden rounded-full sm:inline-flex"
+            variant="outline"
+          >
+            Sign In
+          </Button>
+          <Button className="rounded-full">Get Started</Button>
+
+          {/* Mobile Menu */}
+          <div className="md:hidden">
+            <NavigationSheet />
+          </div>
         </div>
       </div>
-    </header>
-  )
-}
+    </nav>
+  );
+};
+
+export default Navbar;

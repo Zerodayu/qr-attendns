@@ -1,49 +1,35 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
-import "./globals.css";
-import Footer from "@/components/footer";
-import { cn } from "@/lib/utils";
+import { Geist_Mono, Outfit } from "next/font/google"
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" })
+
+const fontMono = Geist_Mono({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "Qr Attendns",
-  description: "Qr code based attendance notification system",
-  openGraph: {
-    images: [
-      {
-        url: "/cover.png", // Update this path to your actual image
-        width: 1200,
-        height: 630,
-        alt: "Qr Attendns - Attendance notification system",
-      },
-    ],
-  },
-};
+  variable: "--font-mono",
+})
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={cn("dark", "font-sans", inter.variable)}> 
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-        <Footer />
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        outfit.variable
+      )}
+    >
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
