@@ -2,7 +2,16 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080",
+    NEXT_PUBLIC_API_URL:
+      process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080",
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "img.icons8.com",
+      },
+    ],
   },
 }
 
