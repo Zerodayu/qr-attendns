@@ -1,20 +1,20 @@
 "use client"
 
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Controller, useForm } from "react-hook-form"
-import { z } from "zod"
+import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Logo } from "@/components/logo"
 import { useSessionStore } from "@/stores/session"
-import { SelectDropdown } from "./select-dropdown"
+import { zodResolver } from "@hookform/resolvers/zod"
 import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import { z } from "zod"
 import { FacebookLogo, GoogleLogo } from "./logos"
+import { SelectDropdown } from "./select-dropdown"
 
 const formSchema = z.object({
   email: z.email(),
@@ -51,12 +51,12 @@ const Signup = () => {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="flex h-full w-full">
-        <div className="relative hidden w-full max-w-2xl grow border-l bg-muted lg:block">
+        <div className="relative hidden w-full max-w-3xl grow border-l bg-muted lg:block">
           <Image
             fill
             alt="Login"
             className="absolute inset-0 size-full object-cover"
-            src="/images/ascii-art.png"
+            src="/ascii-art.png"
           />
         </div>
         <div className="outline-offset-0.5 relative m-auto flex w-full max-w-sm flex-col items-center p-8 outline-0 outline-border/40 sm:outline-2 dark:outline-border/80">
@@ -70,7 +70,7 @@ const Signup = () => {
           <div className="absolute inset-y-0 -left-1 h-[calc(100%+3rem)] -translate-y-6 border-s max-sm:hidden" />
           <div className="absolute inset-y-0 -right-1 h-[calc(100%+3rem)] -translate-y-6 border-e max-sm:hidden" />
 
-          <Logo className="h-9 w-9" />
+          <Logo />
           <p className="mt-4 text-xl font-medium">
             Create an Account to QR Attendnz
           </p>
@@ -134,7 +134,7 @@ const Signup = () => {
             <Separator />
           </div>
 
-          <div className="grid w-full grid-cols-2 gap-4">
+          <div className="grid w-full grid-cols-2 gap-2">
             <Button className="w-full gap-3" disabled={pending}>
               <GoogleLogo />
               with Google

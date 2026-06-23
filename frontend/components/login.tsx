@@ -61,7 +61,7 @@ const Login = () => {
           <div className="absolute inset-y-0 -left-1 h-[calc(100%+3rem)] -translate-y-6 border-s max-sm:hidden" />
           <div className="absolute inset-y-0 -right-1 h-[calc(100%+3rem)] -translate-y-6 border-e max-sm:hidden" />
 
-          <Logo className="h-9 w-9" />
+          <Logo />
           <p className="mt-4 text-xl font-medium">Log in to QR Attendnz</p>
 
           <div className="flex w-full flex-col gap-4 pt-8">
@@ -149,12 +149,12 @@ const Login = () => {
             </p>
           </div>
         </div>
-        <div className="relative hidden w-full max-w-2xl grow border-l bg-muted lg:block">
+        <div className="relative hidden w-full max-w-3xl grow border-l bg-muted lg:block">
           <Image
             fill
             alt="Login"
             className="absolute inset-0 size-full object-cover"
-            src="/images/ascii-art.png"
+            src="/ascii-art.png"
           />
         </div>
       </div>
