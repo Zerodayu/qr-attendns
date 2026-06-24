@@ -5,22 +5,12 @@ import {
   MiniCalendarDay,
   MiniCalendarDays,
 } from "@/components/static/mini-calendar"
-import { RelativeTime, RelativeTimeZoneDisplay } from "./static/time"
-import { Separator } from "./ui/separator"
-import { Calendar } from "lucide-react"
 
 const MiniCal = () => {
   return (
-    <div className="flex items-center gap-4">
-      <MiniCalendar className="pointer-events-none gap-4 px-4">
-        <Calendar />
-        <RelativeTime
-          timeFormatOptions={{ hour: "2-digit", minute: "2-digit" }}
-        >
-          <RelativeTimeZoneDisplay className="text-2xl font-bold" />
-        </RelativeTime>
-        <Separator orientation="vertical" />
-        <MiniCalendarDays>
+    <div className="flex w-full items-center gap-4">
+      <MiniCalendar className="pointer-events-none flex w-full flex-1 items-center gap-4 px-4">
+        <MiniCalendarDays className="flex w-full flex-1 items-center justify-center">
           {(date) => <MiniCalendarDay date={date} key={date.toISOString()} />}
         </MiniCalendarDays>
       </MiniCalendar>

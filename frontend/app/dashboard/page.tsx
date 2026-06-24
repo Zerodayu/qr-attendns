@@ -2,6 +2,11 @@ import { AppSidebar } from "@/components/app-sidebar"
 import MiniCal from "@/components/mini-cal"
 import { ChartPieDonutText } from "@/components/pie-chart"
 import {
+  RelativeTime,
+  RelativeTimeZoneDate,
+  RelativeTimeZoneDisplay,
+} from "@/components/static/time"
+import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -17,6 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
@@ -25,6 +31,7 @@ import {
 } from "@/components/ui/sidebar"
 import {
   BadgeInfo,
+  CalendarCheck,
   ThumbsDown,
   ThumbsUp,
   UserCheck,
@@ -95,39 +102,79 @@ export default function Page() {
           </div>
         </header>
         <div className="flex w-full flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="flex w-full items-center justify-center">
-            <MiniCal />
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <ChartPieDonutText />
-            <CardSection
-              label={cardDatas.totalStudents.label}
-              title={cardDatas.totalStudents.totalCount}
-              labelIcon={<BadgeInfo />}
-              icon={<UsersRound />}
-              desc={cardDatas.totalStudents.desc}
-              footer={cardDatas.totalStudents.footer}
-            />
+          <div className="flex w-full items-center justify-center"></div>
+          <div className="grid gap-4 md:grid-cols-1">
+            <section className="flex flex-col gap-4 lg:flex-row">
+              <div className="flex w-full flex-col items-center justify-center gap-4 rounded-4xl bg-card p-4 py-6 shadow-md ring-1 ring-foreground/10">
+                <RelativeTime
+                  timeFormatOptions={{ hour: "2-digit", minute: "2-digit" }}
+                  dateFormatOptions={{ weekday: "short" }}
+                >
+                  <span className="flex text-4xl font-bold text-foreground">
+                    <RelativeTimeZoneDisplay />
+                    <Separator orientation="vertical" className="mx-4" />{" "}
+                    <RelativeTimeZoneDate />
+                  </span>
+                </RelativeTime>
+                <MiniCal />
+              </div>
 
-            <CardSection
-              label={cardDatas.totalPresent.label}
-              title={cardDatas.totalPresent.totalCount}
-              labelIcon={<ThumbsUp />}
-              icon={<UserCheck />}
-              desc={cardDatas.totalPresent.desc}
-              footer={cardDatas.totalPresent.footer}
-            />
+              <div className="flex w-full flex-col items-center justify-center gap-4 rounded-4xl bg-card py-6 shadow-md ring-1 ring-foreground/10">
+                <div className="flex w-full items-center justify-center gap-4">
+                  <span className="relative rounded-r-full bg-primary px-6 py-2">
+                    <CalendarCheck />
+                  </span>
+                  <span className="flex w-full justify-start">
+                    <p className="text-4xl font-bold">16</p>
+                    /22
+                  </span>
+                </div>
+                <Progress value={75} className="px-8" />
+                <span className="px-4">
+                  Total Students Attended in Section{" "}
+                  <span className="font-mono font-bold underline underline-offset-4">
+                    SectionName
+                  </span>{" "}
+                  Today
+                </span>
+              </div>
+              <div className="flex w-full flex-col items-center justify-center gap-(--card-spacing) rounded-4xl bg-card p-4 shadow-md ring-1 ring-foreground/10">
+                <RelativeTime
+                  timeFormatOptions={{ hour: "2-digit", minute: "2-digit" }}
+                  dateFormatOptions={{ weekday: "short" }}
+                >
+                  <span className="flex text-4xl font-bold text-foreground">
+                    <RelativeTimeZoneDisplay />
+                    <Separator orientation="vertical" className="mx-4" />{" "}
+                    <RelativeTimeZoneDate />
+                  </span>
+                </RelativeTime>
+                <MiniCal />
+              </div>
+            </section>
 
-            <CardSection
-              label={cardDatas.totalAbsent.label}
-              title={cardDatas.totalAbsent.totalCount}
-              labelIcon={<ThumbsDown />}
-              icon={<UserX />}
-              desc={cardDatas.totalAbsent.desc}
-              footer={cardDatas.totalAbsent.footer}
-            />
+            <section className="grid gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4">
+                <ChartPieDonutText />
+                <CardSection
+                  label={cardDatas.totalStudents.label}
+                  title={cardDatas.totalStudents.totalCount}
+                  labelIcon={<BadgeInfo />}
+                  icon={<UsersRound />}
+                  desc={cardDatas.totalStudents.desc}
+                  footer={cardDatas.totalStudents.footer}
+                />
+              </div>
+              <CardSection
+                label={cardDatas.totalStudents.label}
+                title={cardDatas.totalStudents.totalCount}
+                labelIcon={<BadgeInfo />}
+                icon={<UsersRound />}
+                desc={cardDatas.totalStudents.desc}
+                footer={cardDatas.totalStudents.footer}
+              />
+            </section>
           </div>
-          <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
       </SidebarInset>
     </SidebarProvider>

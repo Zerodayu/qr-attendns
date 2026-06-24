@@ -112,10 +112,7 @@ export const MiniCalendar = ({
   return (
     <MiniCalendarContext.Provider value={contextValue}>
       <div
-        className={cn(
-          "flex items-center gap-2 rounded-lg border bg-background p-2",
-          className
-        )}
+        className={cn("flex items-center gap-2 rounded-lg p-2", className)}
         {...props}
       >
         {children}
@@ -182,7 +179,10 @@ export const MiniCalendarDays = ({
   const days = getDays(startDate, dayCount)
 
   return (
-    <div className={cn("flex items-center gap-1", className)} {...props}>
+    <div
+      className={cn("flex flex-1 items-center justify-evenly", className)}
+      {...props}
+    >
       {days.map((date) => children(date))}
     </div>
   )
