@@ -13,7 +13,7 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Oxalis",
+  title: "Oxalis - Qr Based Attendance with Notification System",
 }
 
 export default function RootLayout({
