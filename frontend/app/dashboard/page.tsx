@@ -122,10 +122,10 @@ export default function Page() {
                   </span>
                 </div>
                 <div className="flex w-full items-center justify-center gap-4 px-6">
-                  <span className="flex justify-start text-foreground/50">
-                    <p className="text-4xl font-bold text-primary">16</p>
-                    /22
-                  </span>
+                  <div className="flex justify-start">
+                    <span className="text-4xl font-bold text-primary">16</span>
+                    <span className="font-semibold">/22</span>
+                  </div>
                   <Progress value={75} className="w-full" />
                 </div>
                 <span className="w-full px-4 text-start text-muted-foreground italic">
