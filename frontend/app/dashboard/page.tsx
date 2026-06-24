@@ -129,7 +129,7 @@ export default function Page() {
                   <Progress value={75} className="w-full" />
                 </div>
                 <span className="w-full px-4 text-start text-muted-foreground italic">
-                  — Present Students
+                  — Present Students in Total
                 </span>
               </div>
 
@@ -151,7 +151,7 @@ export default function Page() {
               </div>
             </section>
 
-            <section className="grid gap-4 md:grid-cols-2">
+            <section className="grid gap-4 md:grid-cols-[1fr_1.5fr]">
               <div className="grid grid-cols-1 gap-4">
                 <ChartPieDonutText />
                 <CardSection
@@ -163,14 +163,16 @@ export default function Page() {
                   footer={cardDatas.totalStudents.footer}
                 />
               </div>
-              <CardSection
-                label={cardDatas.totalStudents.label}
-                title={cardDatas.totalStudents.totalCount}
-                labelIcon={<BadgeInfo />}
-                icon={<UsersRound />}
-                desc={cardDatas.totalStudents.desc}
-                footer={cardDatas.totalStudents.footer}
-              />
+              <div className="col-span-1.5 grid">
+                <CardSection
+                  label={cardDatas.totalStudents.label}
+                  title={cardDatas.totalStudents.totalCount}
+                  labelIcon={<BadgeInfo />}
+                  icon={<UsersRound />}
+                  desc={cardDatas.totalStudents.desc}
+                  footer={cardDatas.totalStudents.footer}
+                />
+              </div>
             </section>
           </div>
         </div>
