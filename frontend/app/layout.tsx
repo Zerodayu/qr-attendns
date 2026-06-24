@@ -14,6 +14,18 @@ const fontMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Oxalis - Qr Based Attendance with Notification System",
+  icons: [
+    {
+      rel: "icon",
+      url: "/oxalis.svg",
+      media: "(prefers-color-scheme: light)",
+    },
+    {
+      rel: "icon",
+      url: "/oxalis.svg",
+      media: "(prefers-color-scheme: dark)",
+    },
+  ],
 }
 
 export default function RootLayout({

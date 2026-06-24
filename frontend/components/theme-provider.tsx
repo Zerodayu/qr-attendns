@@ -110,10 +110,13 @@ export function ThemeProvider({
     return theme === "system" ? getSystemTheme() : theme
   })
 
-  const mql =
-    typeof window !== "undefined"
-      ? window.matchMedia("(prefers-color-scheme: dark)")
-      : null
+  const mql = useMemo(
+    () =>
+      typeof window !== "undefined"
+        ? window.matchMedia("(prefers-color-scheme: dark)")
+        : null,
+    []
+  )
 
   useEffect(() => {
     const handler = () => {
@@ -128,8 +131,9 @@ export function ThemeProvider({
   }, [theme, attribute, mql, enableColorScheme])
 
   useEffect(() => {
-    const cleanupTransitions =
-      disableTransitionOnChange ? disableTransitions() : undefined
+    const cleanupTransitions = disableTransitionOnChange
+      ? disableTransitions()
+      : undefined
     const resolved = theme === "system" ? getSystemTheme() : theme
     setResolvedTheme(resolved)
     applyTheme(resolved, attribute, enableColorScheme)
@@ -151,7 +155,5 @@ export function ThemeProvider({
     [theme, resolvedTheme, setTheme]
   )
 
-  return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-  )
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
