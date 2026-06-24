@@ -1,20 +1,54 @@
-import * as React from "react"
-import { Input as InputPrimitive } from "@base-ui/react/input"
+"use client"
 
+import { FieldInput } from "@ark-ui/react/field"
+import type React from "react"
+import { tv, type VariantProps } from "tailwind-variants"
 import { cn } from "@/lib/utils"
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+export const inputVariants = tv({
+  base: [
+    "peer",
+    "w-full min-w-0",
+    "px-3 py-1",
+    "bg-input/50",
+    "text-base md:text-sm",
+    "rounded-3xl border border-transparent",
+    "placeholder:text-muted-foreground",
+    "file:inline-flex file:h-7 file:items-center file:border-0 file:bg-transparent",
+    "file:font-medium file:text-foreground file:text-sm",
+    "transition-[color,box-shadow,background-color]",
+    "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30",
+    "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20",
+    "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+    "motion-reduce:transition-none!",
+  ],
+  variants: {
+    size: {
+      sm: ["h-7"],
+      md: ["h-9"],
+      lg: ["h-10"],
+    },
+  },
+  defaultVariants: {
+    size: "md",
+  },
+})
+
+export interface InputProps
+  extends
+    Omit<React.ComponentProps<typeof FieldInput>, "size">,
+    VariantProps<typeof inputVariants> {}
+
+export const Input = (props: InputProps) => {
+  const { size = "md", type = "text", className, ...rest } = props
+
   return (
-    <InputPrimitive
-      type={type}
+    <FieldInput
+      className={cn(inputVariants({ size }), className)}
+      data-size={size}
       data-slot="input"
-      className={cn(
-        "h-9 w-full min-w-0 rounded-3xl border border-transparent bg-input/50 px-3 py-1 text-base transition-[color,box-shadow,background-color] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
-        className
-      )}
-      {...props}
+      type={type}
+      {...rest}
     />
   )
 }
-
-export { Input }

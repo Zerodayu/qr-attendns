@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar"
+import { ClassCode } from "@/components/class-code"
 import MiniCal from "@/components/mini-cal"
 import { ChartPieDonutText } from "@/components/pie-chart"
 import {
@@ -29,15 +30,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import {
-  BadgeInfo,
-  CalendarCheck,
-  ThumbsDown,
-  ThumbsUp,
-  UserCheck,
-  UsersRound,
-  UserX,
-} from "lucide-react"
+import { BadgeInfo, CalendarCheck, Ticket, UsersRound } from "lucide-react"
 
 export default function Page() {
   const cardDatas = {
@@ -124,32 +117,37 @@ export default function Page() {
                   <span className="relative rounded-r-full bg-primary px-6 py-2">
                     <CalendarCheck />
                   </span>
-                  <span className="flex w-full justify-start">
-                    <p className="text-4xl font-bold">16</p>
-                    /22
+                  <span className="flex w-full justify-start text-2xl font-bold">
+                    Total Attendance Today
                   </span>
                 </div>
-                <Progress value={75} className="px-8" />
-                <span className="px-4">
-                  Total Students Attended in Section{" "}
-                  <span className="font-mono font-bold underline underline-offset-4">
-                    SectionName
-                  </span>{" "}
-                  Today
+                <div className="flex w-full items-center justify-center gap-4 px-6">
+                  <span className="flex justify-start text-foreground/50">
+                    <p className="text-4xl font-bold text-primary">16</p>
+                    /22
+                  </span>
+                  <Progress value={75} className="w-full" />
+                </div>
+                <span className="w-full px-4 text-start text-muted-foreground italic">
+                  — Present Students
                 </span>
               </div>
-              <div className="flex w-full flex-col items-center justify-center gap-(--card-spacing) rounded-4xl bg-card p-4 shadow-md ring-1 ring-foreground/10">
-                <RelativeTime
-                  timeFormatOptions={{ hour: "2-digit", minute: "2-digit" }}
-                  dateFormatOptions={{ weekday: "short" }}
-                >
-                  <span className="flex text-4xl font-bold text-foreground">
-                    <RelativeTimeZoneDisplay />
-                    <Separator orientation="vertical" className="mx-4" />{" "}
-                    <RelativeTimeZoneDate />
+
+              <div className="flex w-full flex-col items-center justify-center gap-4 rounded-4xl bg-card py-6 shadow-md ring-1 ring-foreground/10">
+                <div className="flex w-full items-center justify-center gap-4">
+                  <span className="relative rounded-r-full bg-primary px-6 py-2">
+                    <Ticket />
                   </span>
-                </RelativeTime>
-                <MiniCal />
+                  <span className="flex w-full justify-start text-2xl font-bold">
+                    Class Code
+                  </span>
+                </div>
+                <div className="flex w-full flex-col items-center justify-center gap-4 px-4">
+                  <ClassCode defaultValue="ClassCode" />
+                  <span className="w-full px-4 text-start text-muted-foreground italic">
+                    — Use this to invite Parents on your class
+                  </span>
+                </div>
               </div>
             </section>
 
