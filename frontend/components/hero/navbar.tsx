@@ -6,9 +6,9 @@ import {
 } from "@/components/ui/popover"
 import { ArrowUpRight, Menu, X } from "lucide-react"
 import Link from "next/link"
-import { Logo } from "@/components/static/logo"
 import { NavMenu } from "./nav-menu"
 import { project } from "@/utils/project"
+import Image from "next/image"
 
 const links = [
   { href: "/", label: "Home" },
@@ -28,7 +28,12 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {/* Logo */}
           <Link className="flex items-center gap-3" href="/">
-            <Logo padding="6" />
+            <Image
+              src={project.icon.src}
+              height={project.icon.heigth}
+              width={project.icon.width}
+              alt={project.icon.alt}
+            />
             <span className="text-xl font-bold">{project.name}</span>
           </Link>
         </div>

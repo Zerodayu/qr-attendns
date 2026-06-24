@@ -1,12 +1,12 @@
 "use client"
 
-import { Logo } from "@/components/static/logo"
 import { FacebookLogo, GoogleLogo } from "@/components/static/logos"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { useSessionStore } from "@/stores/session"
+import { project } from "@/utils/project"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Undo2 } from "lucide-react"
 import Image from "next/image"
@@ -16,7 +16,6 @@ import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 import { SelectDropdown } from "./select-dropdown"
-import { project } from "@/utils/project"
 
 const formSchema = z.object({
   email: z.email(),
@@ -72,7 +71,12 @@ const Signup = () => {
           <div className="absolute inset-y-0 -left-1 h-[calc(100%+3rem)] -translate-y-6 border-s max-sm:hidden" />
           <div className="absolute inset-y-0 -right-1 h-[calc(100%+3rem)] -translate-y-6 border-e max-sm:hidden" />
 
-          <Logo />
+          <Image
+            src={project.icon.src}
+            height={project.icon.heigth}
+            width={project.icon.width}
+            alt={project.icon.alt}
+          />
           <p className="mt-4 text-xl font-medium">
             Create an Account to {project.name}
           </p>
