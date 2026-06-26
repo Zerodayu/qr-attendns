@@ -48,7 +48,7 @@ import {
 } from "lucide-react"
 
 export default function Page() {
-  const males = 16
+  const males = 14
   const females = 10
   const totalStudents = males + females
 
