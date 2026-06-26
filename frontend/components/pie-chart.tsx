@@ -19,8 +19,6 @@ import {
 import { Badge } from "./ui/badge"
 import { Status } from "./ui/status"
 
-export const description = "A donut chart with text"
-
 export function ChartPieDonutText({
   maleCount = 0,
   femaleCount = 0,
@@ -112,9 +110,7 @@ export function ChartPieDonutText({
             </Pie>
           </PieChart>
         </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 leading-none font-medium">
+        <div className="flex items-center justify-center gap-2 leading-none font-medium">
           <Badge variant="outline">
             <Status className="bg-chart-1" />
             Male — {maleCount}
@@ -124,12 +120,14 @@ export function ChartPieDonutText({
             Female — {femaleCount}
           </Badge>
         </div>
-        <div className="leading-none text-muted-foreground">
-          Total Students of section{" "}
+      </CardContent>
+      <CardFooter className="flex-col text-sm">
+        <span className="w-full text-start text-muted-foreground italic">
+          — Total Students of{" "}
           <span className="font-bold underline underline-offset-4">
             {sectionName}
           </span>
-        </div>
+        </span>
       </CardFooter>
     </Card>
   )
