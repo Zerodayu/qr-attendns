@@ -7,6 +7,7 @@ import {
   RelativeTimeZoneDate,
   RelativeTimeZoneDisplay,
 } from "@/components/static/time"
+import { Badge, badgeVariants, type BadgeVariant } from "@/components/ui/badge"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,6 +19,7 @@ import {
 import {
   Card,
   CardAction,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -30,7 +32,23 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { BadgeInfo, CalendarCheck, Ticket, UsersRound } from "lucide-react"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  BadgeInfo,
+  CalendarCheck,
+  CircleCheck,
+  ClipboardClock,
+  Ticket,
+  UsersRound,
+} from "lucide-react"
 
 export default function Page() {
   const cardDatas = {
@@ -68,6 +86,31 @@ export default function Page() {
       footer: "niceeee",
     },
   }
+
+  const users: User[] = [
+    {
+      id: "1",
+      name: "Alice Johnson",
+      gender: "Female",
+      timein: true,
+      timeout: true,
+    },
+    {
+      id: "2",
+      name: "Bruno Silva",
+      gender: "Male",
+      timein: false,
+      timeout: true,
+    },
+    {
+      id: "3",
+      name: "Clara Mendes",
+      gender: "Female",
+      timein: true,
+      timeout: false,
+    },
+  ]
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -95,7 +138,6 @@ export default function Page() {
           </div>
         </header>
         <div className="flex w-full flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="flex w-full items-center justify-center"></div>
           <div className="grid gap-4 md:grid-cols-1">
             <section className="flex flex-col gap-4 lg:flex-row">
               <div className="flex w-full flex-col items-center justify-center gap-4 rounded-4xl bg-card p-4 py-6 shadow-md ring-1 ring-foreground/10">
@@ -153,7 +195,11 @@ export default function Page() {
 
             <section className="grid gap-4 md:grid-cols-[1fr_1.5fr]">
               <div className="grid grid-cols-1 gap-4">
-                <ChartPieDonutText />
+                <ChartPieDonutText
+                  sectionName="Testing"
+                  maleCount={12}
+                  femaleCount={14}
+                />
                 <CardSection
                   label={cardDatas.totalStudents.label}
                   title={cardDatas.totalStudents.totalCount}
@@ -164,14 +210,7 @@ export default function Page() {
                 />
               </div>
               <div className="col-span-1.5 grid">
-                <CardSection
-                  label={cardDatas.totalStudents.label}
-                  title={cardDatas.totalStudents.totalCount}
-                  labelIcon={<BadgeInfo />}
-                  icon={<UsersRound />}
-                  desc={cardDatas.totalStudents.desc}
-                  footer={cardDatas.totalStudents.footer}
-                />
+                <TableSection users={users} />
               </div>
             </section>
           </div>
@@ -212,6 +251,98 @@ const CardSection = ({
         <div className="line-clamp-1 flex gap-2 font-medium">{desc}</div>
         <div className="text-muted-foreground">{footer}</div>
       </CardFooter>
+    </Card>
+  )
+}
+
+type User = {
+  id: string
+  name: string
+  gender: string
+  timein?: boolean
+  timeout?: boolean
+}
+type userProps = { users: User[] }
+const TableSection = ({ users }: userProps) => {
+  return (
+    <Card>
+      <CardHeader className="pl-0">
+        <CardTitle className="flex w-full items-center justify-center gap-4 px-0 text-2xl font-bold">
+          <span className="relative rounded-r-full bg-primary px-6 py-2">
+            <ClipboardClock />
+          </span>
+          <span className="flex w-full justify-start text-2xl font-bold">
+            Quick Attendance View
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table className="w-full" isHoverable={false} variant="striped">
+          <TableCaption className="sr-only">
+            Table with row over disabled (isHoverable=false).
+          </TableCaption>
+          <TableHeader>
+            <TableRow className="font-bold">
+              <TableHead className="underline underline-offset-4">
+                Name
+              </TableHead>
+              <TableHead className="text-center underline underline-offset-4">
+                Gender
+              </TableHead>
+              <TableHead className="text-center underline underline-offset-4">
+                Timed-in
+              </TableHead>
+              <TableHead className="text-center underline underline-offset-4">
+                Timed-out
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {users.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell className="pr-8 font-semibold">
+                  {user.name}
+                </TableCell>
+                <TableCell
+                  className={`text-center ${user.gender === "Male" ? "text-chart-1" : "text-chart-5"}`}
+                >
+                  {user.gender}
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge
+                    size="lg"
+                    variant={user.timein ? "success" : "outline"}
+                  >
+                    {user.timein ? (
+                      <>
+                        <CircleCheck />
+                        Timed-in
+                      </>
+                    ) : (
+                      "—"
+                    )}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge
+                    size="lg"
+                    variant={user.timeout ? "success" : "outline"}
+                  >
+                    {user.timeout ? (
+                      <>
+                        <CircleCheck />
+                        Timed-out
+                      </>
+                    ) : (
+                      "—"
+                    )}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
     </Card>
   )
 }

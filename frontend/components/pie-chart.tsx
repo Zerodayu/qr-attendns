@@ -1,13 +1,11 @@
 "use client"
 
-import * as React from "react"
-import { TrendingUp } from "lucide-react"
+import { ChartBarBig } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,38 +16,52 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { Badge } from "./ui/badge"
+import { Status } from "./ui/status"
 
 export const description = "A donut chart with text"
 
-const chartData = [
-  { gender: "male", total: 10, fill: "var(--color-male)" },
-  { gender: "female", total: 12, fill: "var(--color-female)" },
-]
+export function ChartPieDonutText({
+  maleCount = 0,
+  femaleCount = 0,
+  total = maleCount + femaleCount,
+  sectionName = "NONE",
+}: {
+  maleCount: number
+  femaleCount: number
+  total?: number
+  sectionName: string
+}) {
+  const chartData = [
+    { gender: "male", total: maleCount, fill: "var(--color-male)" },
+    { gender: "female", total: femaleCount, fill: "var(--color-female)" },
+  ]
 
-const chartConfig = {
-  total: {
-    label: "Visitors",
-  },
-  male: {
-    label: "Male",
-    color: "var(--chart-2)",
-  },
-  female: {
-    label: "Female",
-    color: "var(--chart-5)",
-  },
-} satisfies ChartConfig
-
-export function ChartPieDonutText() {
-  const totalStudents = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.total, 0)
-  }, [])
+  const chartConfig = {
+    total: {
+      label: "Students",
+    },
+    male: {
+      label: "Male",
+      color: "var(--chart-2)",
+    },
+    female: {
+      label: "Female",
+      color: "var(--chart-5)",
+    },
+  } satisfies ChartConfig
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+      <CardHeader className="pl-0">
+        <CardTitle className="flex w-full items-center justify-center gap-4 px-0 text-2xl font-bold">
+          <span className="relative rounded-r-full bg-primary px-6 py-2">
+            <ChartBarBig />
+          </span>
+          <span className="flex w-full justify-start text-2xl font-bold">
+            Total Students
+          </span>
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -83,7 +95,7 @@ export function ChartPieDonutText() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalStudents.toLocaleString()}
+                          {total.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -103,10 +115,20 @@ export function ChartPieDonutText() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          <Badge variant="outline">
+            <Status className="bg-chart-1" />
+            Male — {maleCount}
+          </Badge>
+          <Badge variant="outline">
+            <Status className="bg-chart-5" />
+            Female — {femaleCount}
+          </Badge>
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Total Students of section{" "}
+          <span className="font-bold underline underline-offset-4">
+            {sectionName}
+          </span>
         </div>
       </CardFooter>
     </Card>

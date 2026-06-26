@@ -249,6 +249,7 @@ export function middleware(request: NextRequest) {
 ```
 
 This means:
+
 - **No CORS needed** — all requests are same-origin from the browser's perspective.
 - **No base URL in client code** — `lib/api.ts` uses relative paths like `/api/v1/sections`.
 - **Auth cookies** flow automatically (same domain, no cross-origin issues).
@@ -556,11 +557,11 @@ Located in `components/ui/`:
 
 All env vars are validated at startup via `env.ts` using Zod. Import `env` from `@/env` — never access `process.env` directly.
 
-| Variable                | Default                 | Description                                |
-| ----------------------- | ----------------------- | ------------------------------------------ |
+| Variable                | Default                 | Description                                      |
+| ----------------------- | ----------------------- | ------------------------------------------------ |
 | `API_URL`               | `http://localhost:8080` | Backend URL (used by middleware as proxy target) |
 | `NEXT_PUBLIC_API_URL`   | `http://localhost:8080` | Backend API base URL (fallback for direct calls) |
-| `NEXT_PUBLIC_VAPID_KEY` | —                       | Web Push VAPID public key                  |
+| `NEXT_PUBLIC_VAPID_KEY` | —                       | Web Push VAPID public key                        |
 
 ---
 
