@@ -74,7 +74,7 @@ export default function ParentBoard() {
         <UserAvatar
           name={user.name}
           size="100%"
-          variant="beam"
+          variant="marble"
           className="object-fill"
         />
       </section>
@@ -124,17 +124,14 @@ const UserButton = ({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button
-            variant="secondary"
-            className="bg-secondary/50 py-6 hover:bg-secondary/70 aria-expanded:bg-secondary/70"
-          >
+          <div className="flex cursor-pointer items-center gap-2 rounded-full bg-secondary/50 p-2 hover:bg-secondary/70 aria-expanded:bg-secondary/70">
             <Avatar className="p-0">
               <AvatarImage src={avatar} alt={username} />
               <AvatarFallback className="p-0 [&_svg]:size-full">
                 <UserAvatar
                   name={username}
                   size="100%"
-                  variant="beam"
+                  variant="marble"
                   className="object-fill"
                 />
               </AvatarFallback>
@@ -144,16 +141,27 @@ const UserButton = ({
               <span className="truncate text-xs">{email}</span>
             </div>
             <ChevronsUpDownIcon className="ml-auto size-4" />
-          </Button>
+          </div>
         }
       />
-      <DropdownMenuContent className="w-fit" align="end" sideOffset={4}>
+      <DropdownMenuContent
+        className="w-fit transition-all duration-500"
+        align="end"
+        sideOffset={4}
+      >
         <DropdownMenuGroup>
           <DropdownMenuLabel className="p-0 font-normal">
             <div className="flex items-center gap-2 px-1 py-1.5 text-left">
               <Avatar>
                 <AvatarImage src={avatar} alt={username} />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarFallback className="p-0 [&_svg]:size-full">
+                  <UserAvatar
+                    name={username}
+                    size="100%"
+                    variant="marble"
+                    className="object-fill"
+                  />
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{username}</span>
