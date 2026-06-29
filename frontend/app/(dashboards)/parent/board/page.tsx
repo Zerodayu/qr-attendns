@@ -11,17 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Separator } from "@/components/ui/separator"
-import {
-  BadgeCheckIcon,
-  BellIcon,
-  ChevronsUpDownIcon,
-  CreditCardIcon,
-  LogOutIcon,
-  SparklesIcon,
-} from "lucide-react"
-import Link from "next/link"
-import UserAvatar from "boring-avatars"
 import { Field } from "@/components/ui/field"
 import {
   Select,
@@ -32,6 +21,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
+import UserAvatar from "boring-avatars"
+import {
+  BadgeCheckIcon,
+  BellIcon,
+  ChevronsUpDownIcon,
+  CreditCardIcon,
+  LogOutIcon,
+  SparklesIcon,
+} from "lucide-react"
+import Link from "next/link"
+
+const user = {
+  name: "testUser",
+  email: "testuser@email.com",
+  avatar: "avatar",
+}
 
 const studentLists = [
   {
@@ -41,38 +47,6 @@ const studentLists = [
   {
     id: "2",
     name: "Sarah Chen",
-  },
-  {
-    id: "3",
-    name: "Michael Rodriguez",
-  },
-  {
-    id: "4",
-    name: "Emma Wilson",
-  },
-  {
-    id: "5",
-    name: "David Kim",
-  },
-  {
-    id: "6",
-    name: "Aron Thompson",
-  },
-  {
-    id: "7",
-    name: "James Brown",
-  },
-  {
-    id: "8",
-    name: "Maria Garcia",
-  },
-  {
-    id: "9",
-    name: "Nick Johnson",
-  },
-  {
-    id: "10",
-    name: "Liam Thompson",
   },
 ]
 
@@ -98,7 +72,7 @@ export default function ParentBoard() {
         {" "}
         blank for now{" "}
         <UserAvatar
-          name={"asdad"}
+          name={user.name}
           size="100%"
           variant="beam"
           className="object-fill"
@@ -116,14 +90,14 @@ const Navs = ({
   navs: { label: string; icon: React.ReactNode; url: string }[]
 }) => {
   return (
-    <div className="fixed top-auto bottom-4 flex w-full flex-col items-center justify-between gap-2 px-4 sm:w-lg">
+    <div className="fixed top-auto bottom-4 flex w-full flex-col items-center justify-between gap-2 px-4 transition-all duration-500 sm:w-lg">
       <SelectStudent
         students={studentLists}
         label="Choose a student"
         onValueChange={(student) => console.log("Selected:", student)}
       />
       <nav
-        className={`${className} flex w-full items-center justify-between gap-6 rounded-t-xl rounded-b-4xl bg-accent/70 p-4 backdrop-blur-md`}
+        className={`${className} flex w-full items-center justify-evenly gap-6 rounded-t-xl rounded-b-4xl bg-accent/70 p-4 backdrop-blur-md`}
       >
         {navs.map((nav) => (
           <Link key={nav.label} href={nav.url}>
@@ -131,19 +105,19 @@ const Navs = ({
           </Link>
         ))}
         <Separator orientation="vertical" />
-        <UserButton />
+        <UserButton username={user.name} email={user.email} />
       </nav>
     </div>
   )
 }
 
 const UserButton = ({
-  username = "User",
-  email = "user@example.com",
-  avatar = "avatar",
+  username,
+  email,
+  avatar,
 }: {
-  username?: string
-  email?: string
+  username: string
+  email: string
   avatar?: string
 }) => {
   return (
