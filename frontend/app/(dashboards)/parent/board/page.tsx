@@ -228,11 +228,11 @@ const SelectStudent = ({
         items={students.map((s) => ({ label: s.name, value: s }))}
         onValueChange={onValueChange}
       >
-        <SelectTrigger className="rounded-b-xl bg-accent/70 py-6 backdrop-blur-md">
+        <SelectTrigger className="text-md rounded-b-xl bg-accent/70 py-6 font-semibold backdrop-blur-md">
           <SelectValue>
             {(item: (typeof students)[number]) => (
               <span className="flex items-center gap-2">
-                <UserAvatar name={item.name} variant="beam" size="8" />
+                <UserAvatar name={item.name} variant="beam" />
                 <span>{item?.name}</span>
               </span>
             )}
