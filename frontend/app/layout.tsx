@@ -44,7 +44,7 @@ export default function RootLayout({
         outfit.variable
       )}
     >
-      <body className="transition-all duration-500">
+      <body>
         <ThemeProvider>
           <DevEnv>{children}</DevEnv>
         </ThemeProvider>
