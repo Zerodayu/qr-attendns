@@ -123,6 +123,7 @@ const UserButton = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
+        nativeButton={false}
         render={
           <div className="flex cursor-pointer items-center gap-2 rounded-full bg-secondary/50 p-2 hover:bg-secondary/70 aria-expanded:bg-secondary/70">
             <Avatar className="p-0">
