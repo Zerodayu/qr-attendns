@@ -76,10 +76,23 @@ const studentLists = [
   },
 ]
 
+const navsLink = [
+  {
+    label: "Home",
+    icon: "icon",
+    url: "#home",
+  },
+  {
+    label: "Settings",
+    icon: "icon",
+    url: "#settings",
+  },
+]
+
 export default function ParentBoard() {
   return (
     <section className="flex h-screen w-full flex-col items-center gap-4 p-4">
-      <Navs />
+      <Navs navs={navsLink} />
 
       <section className="h-screen w-full border-2">
         {" "}
@@ -95,9 +108,15 @@ export default function ParentBoard() {
   )
 }
 
-const Navs = ({ className = "" }) => {
+const Navs = ({
+  className,
+  navs = [],
+}: {
+  className?: string
+  navs: { label: string; icon: React.ReactNode; url: string }[]
+}) => {
   return (
-    <div className="fixed top-auto bottom-4 flex w-full flex-col items-center justify-between gap-2 px-4 sm:w-fit">
+    <div className="fixed top-auto bottom-4 flex w-full flex-col items-center justify-between gap-2 px-4 sm:w-lg">
       <SelectStudent
         students={studentLists}
         label="Choose a student"
@@ -106,8 +125,11 @@ const Navs = ({ className = "" }) => {
       <nav
         className={`${className} flex w-full items-center justify-between gap-6 rounded-t-xl rounded-b-4xl bg-accent/70 p-4 backdrop-blur-md`}
       >
-        <Link href="/parent/board">Home</Link>
-        <Link href="/parent/board">Settings</Link>
+        {navs.map((nav) => (
+          <Link key={nav.label} href={nav.url}>
+            {nav.label}
+          </Link>
+        ))}
         <Separator orientation="vertical" />
         <UserButton />
       </nav>
