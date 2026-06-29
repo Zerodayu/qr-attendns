@@ -57,9 +57,10 @@ export default function Page() {
     section: "Grade 1: Magic",
     students: { males, females },
     totalStudents,
-    presents: totalStudents - 6,
+    presents: totalStudents - 6, // totalStudents - students who have empty or null time-in
   }
 
+  // mockup student lists
   const studentList = [
     {
       id: "1",
