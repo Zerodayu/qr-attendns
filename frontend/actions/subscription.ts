@@ -1,15 +1,23 @@
-"use server"
+"use server";
 
-import { get, post } from "@/lib/api"
+import { get, post } from "@/lib/api";
 
 export async function createInvoice(plan: "essential" | "premium") {
-  return post<{ checkoutUrl: string; linkId: string }>("/subscription/create-invoice", { plan })
+  return post<{ checkoutUrl: string; linkId: string }>(
+    "/subscription/create-invoice",
+    { plan }
+  );
 }
 
 export async function getStatus() {
-  return get<{ plan: string; status: string; currentPeriodStart?: string; currentPeriodEnd?: string }>("/subscription/status")
+  return get<{
+    plan: string;
+    status: string;
+    currentPeriodStart?: string;
+    currentPeriodEnd?: string;
+  }>("/subscription/status");
 }
 
 export async function cancel() {
-  return post("/subscription/cancel")
+  return post("/subscription/cancel");
 }

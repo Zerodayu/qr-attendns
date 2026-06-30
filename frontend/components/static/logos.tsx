@@ -1,4 +1,4 @@
-import type { SVGProps } from "react"
+import type { SVGProps } from "react";
 
 export const Logo01 = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -28,7 +28,7 @@ export const Logo01 = (props: SVGProps<SVGSVGElement>) => (
       fillRule="evenodd"
     />
   </svg>
-)
+);
 
 export const Logo02 = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -51,7 +51,7 @@ export const Logo02 = (props: SVGProps<SVGSVGElement>) => (
       fillRule="evenodd"
     />
   </svg>
-)
+);
 
 export const Logo03 = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -89,7 +89,7 @@ export const Logo03 = (props: SVGProps<SVGSVGElement>) => (
     <path d="M586.56 60H617.8L576 170H543.66L501.86 60H533.1L559.72 137L586.56 60Z" />
     <path d="M357.889 78.9198C363.609 63.9598 377.469 57.7998 391.329 57.7998V89.4798C376.589 87.7198 357.889 94.3198 357.889 117.42V170H329.509V59.9998H357.889V78.9198Z" />
   </svg>
-)
+);
 
 export const Logo04 = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -122,11 +122,11 @@ export const Logo04 = (props: SVGProps<SVGSVGElement>) => (
       </clipPath>
     </defs>
   </svg>
-)
+);
 
 export const FacebookLogo = () => (
   <svg
-    className="size-lg inline-block shrink-0 align-sub text-inherit"
+    className="inline-block size-lg shrink-0 align-sub text-inherit"
     fill="none"
     height="1.2em"
     id="icon-facebook"
@@ -139,11 +139,11 @@ export const FacebookLogo = () => (
       fill="#FFF"
     />
   </svg>
-)
+);
 
 export const GoogleLogo = () => (
   <svg
-    className="size-lg inline-block shrink-0 align-sub text-inherit"
+    className="inline-block size-lg shrink-0 align-sub text-inherit"
     fill="none"
     height="1.2em"
     id="icon-google"
@@ -175,4 +175,4 @@ export const GoogleLogo = () => (
       </clipPath>
     </defs>
   </svg>
-)
+);

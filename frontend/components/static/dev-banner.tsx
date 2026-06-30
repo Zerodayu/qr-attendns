@@ -1,7 +1,9 @@
-import { env } from "@/env"
+import { env } from "@/env";
 
 export const DevEnv = ({ children }: { children: React.ReactNode }) => {
-  if (!env.DEV_ENV) return <>{children}</>
+  if (!env.DEV_ENV) {
+    return <>{children}</>;
+  }
 
   return (
     <section>
@@ -11,5 +13,5 @@ export const DevEnv = ({ children }: { children: React.ReactNode }) => {
       </span>
       {children}
     </section>
-  )
-}
+  );
+};

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { ReactElement } from "react"
-
-import { Field } from "@/components/ui/field"
+import { ShieldUser, UserStar } from "lucide-react";
+import type { ReactElement } from "react";
+import { Field } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -10,22 +10,21 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { ShieldUser, UserStar } from "lucide-react"
+} from "@/components/ui/select";
 
 interface IconPlaceholderProps {
-  lucide: string
-  tabler: string
-  hugeicons: string
-  phosphor: string
-  remixicon: string
-  className?: string
+  className?: string;
+  hugeicons: string;
+  lucide: string;
+  phosphor: string;
+  remixicon: string;
+  tabler: string;
 }
 
 interface Item {
-  label: string
-  value: string | null
-  icon: ReactElement<IconPlaceholderProps>
+  icon: ReactElement<IconPlaceholderProps>;
+  label: string;
+  value: string | null;
 }
 
 const items: Item[] = [
@@ -39,7 +38,7 @@ const items: Item[] = [
     value: "teacher",
     icon: <ShieldUser className="size-4 text-muted-foreground" />,
   },
-]
+];
 
 export function SelectDropdown() {
   return (
@@ -69,5 +68,5 @@ export function SelectDropdown() {
         </SelectContent>
       </Select>
     </Field>
-  )
+  );
 }

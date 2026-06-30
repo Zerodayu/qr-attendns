@@ -1,14 +1,14 @@
-import { create } from "zustand"
+import { create } from "zustand";
 
 interface UiState {
-  sidebarOpen: boolean
-  scannerOpen: boolean
-  lastScannedStudentId: number | null
-  toggleSidebar: () => void
-  setSidebarOpen: (open: boolean) => void
-  openScanner: () => void
-  closeScanner: () => void
-  setLastScannedStudentId: (id: number | null) => void
+  closeScanner: () => void;
+  lastScannedStudentId: number | null;
+  openScanner: () => void;
+  scannerOpen: boolean;
+  setLastScannedStudentId: (id: number | null) => void;
+  setSidebarOpen: (open: boolean) => void;
+  sidebarOpen: boolean;
+  toggleSidebar: () => void;
 }
 
 export const useUiStore = create<UiState>((set) => ({
@@ -22,4 +22,4 @@ export const useUiStore = create<UiState>((set) => ({
   openScanner: () => set({ scannerOpen: true, lastScannedStudentId: null }),
   closeScanner: () => set({ scannerOpen: false }),
   setLastScannedStudentId: (id) => set({ lastScannedStudentId: id }),
-}))
+}));

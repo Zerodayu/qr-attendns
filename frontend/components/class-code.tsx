@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Clipboard,
   ClipboardIndicator,
   ClipboardTrigger,
   ClipboardValue,
-} from "@/components/ui/clipboard"
-import React from "react"
+} from "@/components/ui/clipboard";
 
 export const ClassCode = ({
   defaultValue = "—",
   action,
 }: {
-  defaultValue: string
-  action?: string | any
+  defaultValue: string;
+  action?: string | any;
 }) => {
-  const [value, setValue] = React.useState(defaultValue)
+  const [value, setValue] = React.useState(defaultValue);
 
   return (
     <div className="flex w-full flex-1 flex-col gap-2">
-      <Clipboard value={value} className="w-full">
+      <Clipboard className="w-full" value={value}>
         <ClipboardValue className="w-full" />
 
         <ClipboardTrigger asChild>
@@ -39,5 +39,5 @@ export const ClassCode = ({
         Change Code
       </Button>
     </div>
-  )
-}
+  );
+};

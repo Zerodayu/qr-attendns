@@ -1,17 +1,4 @@
 {
-  "name": "frontend-Fourfold",
-  "version": "0.0.1",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "add-ui": "bunx --bun shadcn@latest add",
-    "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit"
-  },
   "dependencies": {
     "@ark-ui/react": "^5.37.2",
     "@base-ui/react": "^1.6.0",
@@ -43,15 +30,34 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.16",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "husky": "^9.1.7",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "typescript": "^5",
+    "ultracite": "7.8.3"
+  },
+  "name": "frontend-Fourfold",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "add-ui": "bunx --bun shadcn@latest add",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "typecheck": "tsc --noEmit",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "prepare": "husky"
+  },
+  "type": "module",
+  "version": "0.0.1",
+  "private": true
 }

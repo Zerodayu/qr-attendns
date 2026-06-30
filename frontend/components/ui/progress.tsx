@@ -5,8 +5,8 @@ import {
   useProgressContext,
 } from "@ark-ui/react/progress";
 import type React from "react";
-import { cn } from "@/lib/utils";
 import { FieldLabel } from "@/components/ui/field";
+import { cn } from "@/lib/utils";
 
 export const useProgress = useProgressContext;
 
@@ -97,6 +97,14 @@ export const ProgressValue = (
   const { className, ...rest } = props;
 
   return (
-    <FieldLabel render={<ArkProgress.ValueText className={cn("ms-auto tabular-nums", className)} data-slot="progress-value" {...rest} />}></FieldLabel>
+    <FieldLabel
+      render={
+        <ArkProgress.ValueText
+          className={cn("ms-auto tabular-nums", className)}
+          data-slot="progress-value"
+          {...rest}
+        />
+      }
+    />
   );
 };

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { ChartBarBig } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
+import { ChartBarBig } from "lucide-react";
+import { Label, Pie, PieChart } from "recharts";
 
 import {
   Card,
@@ -9,15 +9,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart"
-import { Badge } from "./ui/badge"
-import { Status } from "./ui/status"
+} from "@/components/ui/chart";
+import { Badge } from "./ui/badge";
+import { Status } from "./ui/status";
 
 export function ChartPieDonutText({
   maleCount = 0,
@@ -25,15 +25,15 @@ export function ChartPieDonutText({
   total = maleCount + femaleCount,
   sectionName = "NONE",
 }: {
-  maleCount: number
-  femaleCount: number
-  total?: number
-  sectionName: string
+  maleCount: number;
+  femaleCount: number;
+  total?: number;
+  sectionName: string;
 }) {
   const chartData = [
     { gender: "male", total: maleCount, fill: "var(--color-male)" },
     { gender: "female", total: femaleCount, fill: "var(--color-female)" },
-  ]
+  ];
 
   const chartConfig = {
     total: {
@@ -47,35 +47,35 @@ export function ChartPieDonutText({
       label: "Female",
       color: "var(--chart-5)",
     },
-  } satisfies ChartConfig
+  } satisfies ChartConfig;
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="pl-0">
-        <CardTitle className="flex w-full items-center justify-center gap-4 px-0 text-2xl font-bold">
+        <CardTitle className="flex w-full items-center justify-center gap-4 px-0 font-bold text-2xl">
           <span className="relative rounded-r-full bg-primary px-6 py-2">
             <ChartBarBig />
           </span>
-          <span className="flex w-full justify-start text-2xl font-bold">
+          <span className="flex w-full justify-start font-bold text-2xl">
             Total Students
           </span>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
-          config={chartConfig}
           className="mx-auto aspect-square max-h-60"
+          config={chartConfig}
         >
           <PieChart>
             <ChartTooltip
-              cursor={false}
               content={<ChartTooltipContent hideLabel />}
+              cursor={false}
             />
             <Pie
               data={chartData}
               dataKey="total"
-              nameKey="gender"
               innerRadius={60}
+              nameKey="gender"
               strokeWidth={5}
             >
               <Label
@@ -83,34 +83,34 @@ export function ChartPieDonutText({
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                     return (
                       <text
+                        dominantBaseline="middle"
+                        textAnchor="middle"
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
                       >
                         <tspan
+                          className="fill-foreground font-bold text-3xl"
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
                         >
                           {total.toLocaleString()}
                         </tspan>
                         <tspan
+                          className="fill-muted-foreground"
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
                         >
                           Students
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
             </Pie>
           </PieChart>
         </ChartContainer>
-        <div className="flex items-center justify-center gap-2 leading-none font-medium">
+        <div className="flex items-center justify-center gap-2 font-medium leading-none">
           <Badge variant="outline">
             <Status className="bg-chart-1" />
             Male — {maleCount}
@@ -130,5 +130,5 @@ export function ChartPieDonutText({
         </span>
       </CardFooter>
     </Card>
-  )
+  );
 }

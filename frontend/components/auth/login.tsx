@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import { FacebookLogo, GoogleLogo } from "@/components/static/logos"
-import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { useSessionStore } from "@/stores/session"
-import { project } from "@/utils/project"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Undo2 } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Undo2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { FacebookLogo, GoogleLogo } from "@/components/static/logos";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { useSessionStore } from "@/stores/session";
+import { project } from "@/utils/project";
 
 const formSchema = z.object({
   email: z.email(),
   password: z.string().min(8, "Password must be at least 8 characters long"),
-})
+});
 
 const Login = () => {
-  const router = useRouter()
-  const signIn = useSessionStore((s) => s.signIn)
-  const [pending, setPending] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const signIn = useSessionStore((s) => s.signIn);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -33,25 +33,25 @@ const Login = () => {
       password: "",
     },
     resolver: zodResolver(formSchema),
-  })
+  });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    setPending(true)
-    setError(null)
-    await signIn(data)
-    const session = useSessionStore.getState().session
+    setPending(true);
+    setError(null);
+    await signIn(data);
+    const session = useSessionStore.getState().session;
     if (session) {
-      router.push("/dashboard")
+      router.push("/dashboard");
     } else {
-      setError(useSessionStore.getState().error ?? "Sign in failed")
+      setError(useSessionStore.getState().error ?? "Sign in failed");
     }
-    setPending(false)
-  }
+    setPending(false);
+  };
 
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="flex h-full w-full">
-        <div className="outline-offset-0.5 relative m-auto flex w-full max-w-sm flex-col items-center p-8 outline-0 outline-border/40 sm:outline-2 dark:outline-border/80">
+        <div className="relative m-auto flex w-full max-w-sm flex-col items-center p-8 outline-0 outline-border/40 outline-offset-0.5 sm:outline-2 dark:outline-border/80">
           <div className="absolute inset-x-0 top-0 w-[calc(100%+4rem)] -translate-x-8 border-t max-sm:hidden" />
           <div className="absolute inset-x-0 bottom-0 w-[calc(100%+4rem)] -translate-x-8 border-b max-sm:hidden" />
           <div className="absolute inset-y-0 left-0 h-[calc(100%+4rem)] -translate-y-8 border-s max-sm:hidden" />
@@ -63,12 +63,12 @@ const Login = () => {
           <div className="absolute inset-y-0 -right-1 h-[calc(100%+3rem)] -translate-y-6 border-e max-sm:hidden" />
 
           <Image
-            src={project.icon.src}
-            height={project.icon.heigth}
-            width={project.icon.width}
             alt={project.icon.alt}
+            height={project.icon.heigth}
+            src={project.icon.src}
+            width={project.icon.width}
           />
-          <p className="mt-4 text-xl font-medium">Log in to {project.name}</p>
+          <p className="mt-4 font-medium text-xl">Log in to {project.name}</p>
 
           <div className="flex w-full flex-col gap-4 pt-8">
             <Button className="w-full gap-3" disabled={pending}>
@@ -89,7 +89,7 @@ const Login = () => {
           </div>
 
           {error && (
-            <p className="mb-2 w-full text-center text-sm text-destructive">
+            <p className="mb-2 w-full text-center text-destructive text-sm">
               {error}
             </p>
           )}
@@ -139,7 +139,7 @@ const Login = () => {
 
           <div className="my-5 space-y-5">
             <Link
-              className="block text-center text-sm text-muted-foreground underline"
+              className="block text-center text-muted-foreground text-sm underline"
               href="/"
             >
               Forgot your password?
@@ -156,8 +156,8 @@ const Login = () => {
           </div>
           <Separator />
 
-          <Link href="/" className="my-5">
-            <Button variant="link" size="sm">
+          <Link className="my-5" href="/">
+            <Button size="sm" variant="link">
               <Undo2 />
               Back to Homepage
             </Button>
@@ -165,15 +165,15 @@ const Login = () => {
         </div>
         <div className="relative hidden w-full max-w-3xl grow border-l bg-muted lg:block">
           <Image
-            fill
             alt="Login"
             className="absolute inset-0 size-full object-cover"
+            fill
             src="/ascii-art.png"
           />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

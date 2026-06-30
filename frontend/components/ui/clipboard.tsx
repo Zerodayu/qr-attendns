@@ -1,28 +1,27 @@
-"use client"
+"use client";
 
 import {
   Clipboard as ArkClipboard,
   useClipboardContext,
-} from "@ark-ui/react/clipboard"
-import { CheckIcon, ClipboardIcon } from "lucide-react"
-import type React from "react"
-import { tv, type VariantProps } from "tailwind-variants"
-import { cn } from "@/lib/utils"
-import { inputVariants } from "@/components/ui/input"
+} from "@ark-ui/react/clipboard";
+import { CheckIcon, ClipboardIcon } from "lucide-react";
+import type React from "react";
+import { tv, type VariantProps } from "tailwind-variants";
+import { inputVariants } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-export const useClipboard = useClipboardContext
+export const useClipboard = useClipboardContext;
 
-interface ClipboardProps extends React.ComponentProps<
-  typeof ArkClipboard.Root
-> {
+interface ClipboardProps
+  extends React.ComponentProps<typeof ArkClipboard.Root> {
   /**
    * Styles for the root element
    */
-  rootClassName?: string
+  rootClassName?: string;
 }
 
 export const Clipboard = (props: ClipboardProps) => {
-  const { rootClassName, className, children, ...rest } = props
+  const { rootClassName, className, children, ...rest } = props;
 
   return (
     <ArkClipboard.Root
@@ -37,17 +36,17 @@ export const Clipboard = (props: ClipboardProps) => {
         {children}
       </ArkClipboard.Control>
     </ArkClipboard.Root>
-  )
-}
+  );
+};
 
 export const ClipboardTrigger = (
   props: React.ComponentProps<typeof ArkClipboard.Trigger>
-) => <ArkClipboard.Trigger data-slot="clipboard-trigger" {...props} />
+) => <ArkClipboard.Trigger data-slot="clipboard-trigger" {...props} />;
 
 export const ClipboardInput = (
   props: React.ComponentProps<typeof ArkClipboard.Input>
 ) => {
-  const { className, ...rest } = props
+  const { className, ...rest } = props;
 
   return (
     <ArkClipboard.Input
@@ -55,8 +54,8 @@ export const ClipboardInput = (
       data-slot="clipboard-input"
       {...rest}
     />
-  )
-}
+  );
+};
 
 const clipboardValueVariants = tv({
   base: [
@@ -64,7 +63,7 @@ const clipboardValueVariants = tv({
     "px-3",
     "bg-transparent dark:bg-input/30",
     "text-base md:text-sm",
-    "rounded-2xl font-semibold font-mono border border-input shadow-sm/5",
+    "rounded-2xl border border-input font-mono font-semibold shadow-sm/5",
   ],
   variants: {
     size: {
@@ -78,15 +77,14 @@ const clipboardValueVariants = tv({
   defaultVariants: {
     size: "md",
   },
-})
+});
 
 interface ClipboardValueProps
-  extends
-    React.ComponentProps<typeof ArkClipboard.ValueText>,
+  extends React.ComponentProps<typeof ArkClipboard.ValueText>,
     VariantProps<typeof clipboardValueVariants> {}
 
 export const ClipboardValue = (props: ClipboardValueProps) => {
-  const { size, className, ...rest } = props
+  const { size, className, ...rest } = props;
 
   return (
     <ArkClipboard.ValueText
@@ -94,13 +92,13 @@ export const ClipboardValue = (props: ClipboardValueProps) => {
       data-slot="clipboard-value"
       {...rest}
     />
-  )
-}
+  );
+};
 
 export const ClipboardIndicator = (
   props: React.ComponentProps<typeof ArkClipboard.Indicator>
 ) => {
-  const { copied = <CheckIcon />, className, children, ...rest } = props
+  const { copied = <CheckIcon />, className, children, ...rest } = props;
 
   return (
     <ArkClipboard.Indicator
@@ -111,5 +109,5 @@ export const ClipboardIndicator = (
     >
       {children || <ClipboardIcon />}
     </ArkClipboard.Indicator>
-  )
-}
+  );
+};

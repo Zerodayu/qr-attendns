@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import type { ComponentProps } from "react"
-import { cn } from "@/lib/utils"
+import Link from "next/link";
+import type { ComponentProps } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 const links = [
   {
@@ -28,13 +28,13 @@ const links = [
     href: "#about",
     label: "About",
   },
-]
+];
 
 export const NavMenu = ({
   className,
   ...props
 }: ComponentProps<typeof NavigationMenu>) => {
-  const { orientation } = props
+  const { orientation } = props;
 
   return (
     <NavigationMenu {...props}>
@@ -59,5 +59,5 @@ export const NavMenu = ({
         ))}
       </NavigationMenuList>
     </NavigationMenu>
-  )
-}
+  );
+};

@@ -1,27 +1,27 @@
-import { Button } from "@/components/ui/button"
+import { ArrowUpRight, LogIn, Menu, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { ArrowUpRight, LogIn, LogInIcon, Menu, X } from "lucide-react"
-import Link from "next/link"
-import { NavMenu } from "./nav-menu"
-import { project } from "@/utils/project"
-import Image from "next/image"
-import { Separator } from "../ui/separator"
+} from "@/components/ui/popover";
+import { project } from "@/utils/project";
+import { Separator } from "../ui/separator";
+import { NavMenu } from "./nav-menu";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "#components", label: "Components" },
   { href: "#blog", label: "Blog" },
   { href: "#about", label: "About" },
-]
+];
 
 const buttons = {
   primary: { label: "Register Now", link: "/sign-up" },
   secondary: { label: "Login", link: "/sign-in" },
-}
+};
 const Navbar = () => {
   return (
     <div className="fixed top-0 h-16 w-full border-b bg-background/50 px-6 backdrop-blur-md">
@@ -30,12 +30,12 @@ const Navbar = () => {
           {/* Logo */}
           <Link className="flex items-center gap-3" href="/">
             <Image
-              src={project.icon.src}
-              height={project.icon.heigth}
-              width={project.icon.width}
               alt={project.icon.alt}
+              height={project.icon.heigth}
+              src={project.icon.src}
+              width={project.icon.width}
             />
-            <span className="text-xl font-bold">{project.name}</span>
+            <span className="font-bold text-xl">{project.name}</span>
           </Link>
         </div>
 
@@ -72,17 +72,17 @@ const Navbar = () => {
               <div className="flex w-full flex-col items-end gap-4">
                 {links.map((link) => (
                   <Link
-                    key={link.href}
                     href={link.href}
+                    key={link.href}
                     // className="flex w-full rounded-3xl p-3 text-end text-xl font-medium transition-all hover:bg-secondary/50"
                   >
-                    <Button variant="link" className="text-xl text-foreground">
+                    <Button className="text-foreground text-xl" variant="link">
                       {link.label}
                     </Button>
                   </Link>
                 ))}
                 <Separator />
-                <Link href="/sign-in" className="w-full">
+                <Link className="w-full" href="/sign-in">
                   <Button className="w-full font-bold" size="lg">
                     {buttons.secondary.label}
                     <LogIn />
@@ -94,7 +94,7 @@ const Navbar = () => {
         </div>
       </nav>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

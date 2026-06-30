@@ -7,4 +7,4 @@ export const project = {
     heigth: 36,
     alt: "oxalis-icon",
   },
-}
+};
